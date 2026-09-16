@@ -1,0 +1,1770 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Haoyu Wei</title>
+<meta name="description" content="Haoyu Wei — Ph.D. candidate in Economics at UC San Diego. Semiparametric efficiency where causal inference meets statistical machine learning.">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+
+/* ============================================================
+   TOKENS  —  light is the base; dark redefines tokens only
+   ============================================================ */
+:root{
+  --ground:#f5f5f8;
+  --surface:#ffffff;
+  --surface-2:#fafafc;
+  --ink:#15151c;
+  --ink-soft:#3a3a48;
+  --muted:#5c5c6e;
+  --faint:#8b8b9c;
+  --rule:#e3e3eb;
+  --rule-strong:#cfcfdb;
+
+  --ml:#0c7480;          /* machine learning */
+  --ml-wash:#0c748014;
+  --ci:#3a4fa8;          /* causal inference */
+  --ci-wash:#3a4fa814;
+  --key:#b0263b;         /* the one warm note: job market paper */
+  --key-wash:#b0263b12;
+  --key-fg:#ffffff;
+
+  --shadow:0 1px 2px rgba(21,21,28,.05), 0 8px 24px -12px rgba(21,21,28,.22);
+  --shadow-lift:0 2px 4px rgba(21,21,28,.06), 0 18px 44px -16px rgba(21,21,28,.3);
+
+  --serif:'Newsreader', 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+  --sans:'Public Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --mono:'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  --measure:66ch;
+  --pad:clamp(1.25rem, 4vw, 3rem);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0e0e14;
+    --surface:#17171f;
+    --surface-2:#1c1c26;
+    --ink:#ebebf1;
+    --ink-soft:#d2d2dd;
+    --muted:#9797a9;
+    --faint:#717184;
+    --rule:#282833;
+    --rule-strong:#3a3a49;
+
+    --ml:#54c7d2;
+    --ml-wash:#54c7d21f;
+    --ci:#8b9cef;
+    --ci-wash:#8b9cef1f;
+    --key:#f0788a;
+    --key-wash:#f0788a1a;
+    --key-fg:#14141b;
+
+    --shadow:0 1px 2px rgba(0,0,0,.5), 0 8px 24px -12px rgba(0,0,0,.7);
+    --shadow-lift:0 2px 4px rgba(0,0,0,.5), 0 18px 44px -16px rgba(0,0,0,.85);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0e0e14;
+  --surface:#17171f;
+  --surface-2:#1c1c26;
+  --ink:#ebebf1;
+  --ink-soft:#d2d2dd;
+  --muted:#9797a9;
+  --faint:#717184;
+  --rule:#282833;
+  --rule-strong:#3a3a49;
+
+  --ml:#54c7d2;
+  --ml-wash:#54c7d21f;
+  --ci:#8b9cef;
+  --ci-wash:#8b9cef1f;
+  --key:#f0788a;
+  --key-wash:#f0788a1a;
+  --key-fg:#14141b;
+
+  --shadow:0 1px 2px rgba(0,0,0,.5), 0 8px 24px -12px rgba(0,0,0,.7);
+  --shadow-lift:0 2px 4px rgba(0,0,0,.5), 0 18px 44px -16px rgba(0,0,0,.85);
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--ground);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:16px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3{font-family:var(--serif);font-weight:500;text-wrap:balance;margin:0}
+a{color:inherit}
+:where(a,button,[tabindex]):focus-visible{
+  outline:2px solid var(--ci);
+  outline-offset:3px;
+  border-radius:2px;
+}
+.shell{max-width:1120px;margin:0 auto;padding:0 var(--pad)}
+
+/* ============================================================
+   MASTHEAD
+   ============================================================ */
+.masthead{padding:clamp(2.75rem,6vw,4.5rem) 0 clamp(1.5rem,3vw,2.25rem)}
+.masthead-grid{
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  gap:1.75rem;
+}
+@media (min-width:860px){
+  .masthead-grid{
+    grid-template-columns:minmax(0,1.05fr) auto minmax(0,1fr);
+    gap:clamp(1.75rem,3.5vw,3rem);
+    align-items:end;
+  }
+}
+.portrait{margin:0;justify-self:start;align-self:center}
+@media (min-width:860px){ .portrait{justify-self:center} }
+.portrait-frame,.portrait img{
+  width:clamp(104px,11vw,136px);
+  aspect-ratio:1;
+  border-radius:10px;
+  display:block;
+}
+.portrait img{object-fit:cover;border:1px solid var(--rule-strong)}
+.portrait-frame{
+  border:1px solid var(--rule-strong);
+  background:var(--surface);
+  color:var(--faint);
+  display:grid;place-items:center;
+}
+.portrait-frame svg{width:52%;height:52%;display:block}
+.eyebrow{
+  font-family:var(--mono);
+  font-size:.6875rem;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--faint);
+  margin:0 0 1rem;
+}
+.name{
+  font-size:clamp(2.5rem,7vw,4rem);
+  line-height:1.02;
+  letter-spacing:-.02em;
+  margin:0 0 .5rem;
+}
+.affil{
+  font-family:var(--mono);
+  font-size:.8125rem;
+  color:var(--muted);
+  line-height:1.7;
+  margin:0;
+}
+.affil a{color:var(--ci);text-decoration-color:color-mix(in srgb, var(--ci) 40%, transparent);text-underline-offset:3px}
+.thesis{
+  font-family:var(--serif);
+  font-size:clamp(1.0625rem,1.8vw,1.25rem);
+  line-height:1.55;
+  color:var(--ink-soft);
+  margin:0;
+  max-width:46ch;
+  border-left:2px solid var(--key);
+  padding-left:1.125rem;
+}
+.thesis em{font-style:italic;color:var(--ink)}
+
+/* ============================================================
+   SECTION HEADS — the staggered-adoption stair as the marker
+   ============================================================ */
+.section{padding:clamp(2.5rem,5vw,4rem) 0 0}
+.sec-head{
+  display:flex;align-items:center;gap:.875rem;
+  margin:0 0 .375rem;
+}
+.stair{flex:none;display:block;color:var(--rule-strong)}
+.sec-head h2{
+  font-size:clamp(1.375rem,2.6vw,1.75rem);
+  letter-spacing:-.01em;
+}
+.sec-head .count{
+  font-family:var(--mono);font-size:.75rem;color:var(--faint);
+  margin-left:auto;flex:none;
+  font-variant-numeric:tabular-nums;
+}
+.sec-note{
+  color:var(--muted);font-size:.875rem;margin:0 0 1.5rem;
+  max-width:var(--measure);
+}
+
+/* ============================================================
+   RESEARCH MAP
+   ============================================================ */
+.map-wrap{
+  background:var(--surface);
+  border:1px solid var(--rule);
+  border-radius:14px;
+  box-shadow:var(--shadow);
+  /* not hidden: the hover popovers need to escape the panel */
+}
+.map-head{
+  display:flex;flex-wrap:wrap;gap:.75rem 1.25rem;align-items:baseline;
+  padding:1rem 1.25rem;
+  border-bottom:1px solid var(--rule);
+  background:var(--surface-2);
+  border-radius:13px 13px 0 0;
+}
+.map-head h3{font-size:1rem;font-weight:600;letter-spacing:-.005em}
+.map-hint{font-family:var(--mono);font-size:.6875rem;color:var(--faint);margin:0 0 0 auto}
+.map{padding:clamp(1.25rem,3vw,1.75rem)}
+
+/* each field carries its own accent, so one set of chip rules serves every context */
+.band-rule--ml,.fb-group--ml,.tp-row--ml{--field:var(--ml);--field-wash:var(--ml-wash)}
+.band-rule--ci,.fb-group--ci,.tp-row--ci{--field:var(--ci);--field-wash:var(--ci-wash)}
+
+/* the two literatures are named rules; the papers sit between them */
+.band-rule{display:flex;align-items:center;gap:.875rem}
+.band-rule::after{
+  content:"";flex:1;height:1px;
+  background:color-mix(in srgb,var(--field) 32%,transparent);
+}
+.band-rule--ml{flex-direction:row-reverse}
+.band-label{
+  font-family:var(--mono);
+  font-size:.625rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--field);white-space:nowrap;
+}
+.pill{
+  font-family:var(--sans);
+  font-size:.8125rem;
+  line-height:1.25;
+  display:inline-flex;align-items:center;gap:.5rem;
+  padding:.5rem .6875rem;
+  border-radius:999px;
+  border:1px solid var(--rule-strong);
+  background:var(--surface);
+  color:var(--ink-soft);
+  cursor:pointer;
+  transition:border-color .16s, background .16s, color .16s, transform .16s;
+}
+.pill .n{
+  font-family:var(--mono);font-size:.6875rem;
+  color:var(--faint);font-variant-numeric:tabular-nums;
+}
+.pill:not(.tlabel):hover,.pill[aria-pressed="true"]{
+  border-color:var(--field);background:var(--field-wash);color:var(--ink);
+}
+.pill:not(.tlabel):hover .n,.pill[aria-pressed="true"] .n{color:var(--field)}
+.pill:not(.tlabel):hover{transform:translateY(-1px)}
+/* topic chips inside a popover are labels, not controls */
+.tlabel{
+  cursor:default;
+  border-color:color-mix(in srgb,var(--field) 26%,transparent);
+  background:var(--field-wash);
+  font-size:.75rem;
+  padding:.3125rem .5625rem;
+}
+.tlabel .n{color:var(--field)}
+
+/* hover a paper to see the topics it draws on */
+.mapnode{position:relative}
+.topics-pop{
+  position:absolute;z-index:30;
+  left:0;top:calc(100% + .5rem);
+  width:max-content;
+  min-width:13rem;
+  max-width:min(22rem, calc(100vw - 3rem));
+  background:var(--surface);
+  border:1px solid var(--rule-strong);
+  border-radius:12px;
+  box-shadow:var(--shadow-lift);
+  padding:.875rem 1rem;
+  display:grid;gap:.625rem;
+  opacity:0;visibility:hidden;transform:translateY(-4px);
+  transition:opacity .16s ease, transform .16s ease, visibility .16s;
+  pointer-events:none;
+}
+/* the lower pair open upward, and the right-hand one anchors right,
+   so a popover never spills past the panel */
+.spine-row .topics-pop{top:auto;bottom:calc(100% + .5rem)}
+.spine-row .mapnode:last-child .topics-pop{left:auto;right:0}
+.mapnode:hover > .topics-pop,
+.mapnode:focus-within > .topics-pop{opacity:1;visibility:visible;transform:none}
+.tp-row{display:grid;gap:.375rem}
+.tp-label{
+  font-family:var(--mono);font-size:.5625rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--field);
+}
+.tp-chips{display:flex;flex-wrap:wrap;gap:.3125rem}
+
+/* ============================================================
+   TOPIC FILTER — the control, placed with the lists it acts on
+   ============================================================ */
+.filterwrap{padding:clamp(2.5rem,5vw,4rem) 0 0}
+.filterwrap + .section{padding-top:1.5rem}
+/* recessed, so it reads as a control strip rather than a second content panel */
+.filterbar{
+  background:var(--surface-2);
+  border:1px solid var(--rule);
+  border-radius:14px;
+  padding:1rem 1.25rem 1.125rem;
+}
+.fb-head{
+  display:flex;flex-wrap:wrap;gap:.375rem 1rem;align-items:baseline;
+  margin:0 0 .875rem;
+}
+.fb-title{
+  font-family:var(--mono);font-size:.6875rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--faint);margin:0;font-weight:400;
+}
+.fb-status{
+  font-family:var(--mono);font-size:.6875rem;color:var(--muted);
+  margin:0 0 0 auto;display:flex;align-items:center;gap:.625rem;
+  font-variant-numeric:tabular-nums;
+}
+.fb-clear{
+  font-family:var(--mono);font-size:.6875rem;color:var(--ink);
+  background:none;border:1px solid var(--rule-strong);border-radius:5px;
+  padding:.125rem .4375rem;cursor:pointer;
+}
+.fb-clear:hover{border-color:var(--ink)}
+.fb-group{display:grid;gap:.4375rem;grid-template-columns:minmax(0,1fr)}
+.fb-group + .fb-group{margin-top:.875rem}
+@media (min-width:760px){
+  .fb-group{grid-template-columns:9rem minmax(0,1fr);gap:.75rem;align-items:start}
+}
+.fb-label{
+  font-family:var(--mono);font-size:.625rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--field);padding-top:.5rem;
+}
+.fb-chips{display:flex;flex-wrap:wrap;gap:.4375rem}
+
+/* the spine + keystone */
+.spine{
+  margin:1.25rem 0;
+  display:grid;gap:.625rem;
+}
+.spine-row{display:flex;flex-wrap:wrap;gap:.625rem}
+.spine-row > *{flex:1 1 15rem}
+.keystone{
+  display:block;width:100%;text-align:left;
+  border:1px solid var(--key);
+  background:linear-gradient(var(--key-wash),var(--key-wash)) var(--surface);
+  border-radius:11px;
+  padding:.8125rem 1rem;
+  cursor:pointer;
+  font-family:inherit;
+  transition:box-shadow .18s, transform .18s;
+}
+.keystone:hover{box-shadow:var(--shadow-lift);transform:translateY(-1px)}
+.keystone .k-tag{
+  font-family:var(--mono);font-size:.625rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--key);display:block;margin-bottom:.3125rem;
+}
+.keystone .k-title{
+  font-family:var(--serif);font-size:1.0625rem;line-height:1.25;color:var(--ink);
+  display:block;
+}
+.spine-node{
+  display:block;width:100%;text-align:left;
+  border:1px dashed var(--key);
+  background:var(--surface);
+  border-radius:11px;
+  padding:.8125rem 1rem;
+  cursor:pointer;
+  font-family:inherit;
+  transition:background .18s;
+}
+.spine-node:hover{background:linear-gradient(var(--key-wash),var(--key-wash)) var(--surface)}
+.spine-node .k-tag{
+  font-family:var(--mono);font-size:.625rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--key);display:block;margin-bottom:.3125rem;
+}
+.spine-node .k-title{font-family:var(--serif);font-size:.9375rem;line-height:1.3;color:var(--ink-soft);display:block}
+.k-authors{
+  display:block;
+  font-family:var(--sans);
+  font-size:.8125rem;line-height:1.45;
+  color:var(--muted);
+  margin-top:.375rem;
+}
+.spine-node .k-authors{font-size:.75rem;margin-top:.3125rem}
+.k-authors .me{color:var(--ink);font-weight:600}
+
+.map-legend{
+  display:flex;flex-wrap:wrap;gap:.375rem 1.25rem;
+  padding:.75rem 1.25rem;
+  border-top:1px solid var(--rule);
+  background:var(--surface-2);
+  border-radius:0 0 13px 13px;
+  font-family:var(--mono);font-size:.6875rem;color:var(--muted);
+}
+.map-legend b{font-weight:400;display:inline-flex;align-items:center;gap:.4375rem}
+.swatch{width:22px;height:2px;border-radius:1px;display:inline-block}
+
+/* ============================================================
+   PAPER LIST
+   ============================================================ */
+.papers{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.paper{
+  border-top:1px solid var(--rule);
+  padding:1.25rem 0;
+  display:grid;
+  gap:.5rem .75rem;
+  grid-template-columns:minmax(0,1fr);
+  transition:opacity .2s;
+}
+.paper:last-child{border-bottom:1px solid var(--rule)}
+@media (min-width:760px){
+  .paper{grid-template-columns:minmax(0,1fr) 14.5rem;align-items:start}
+  .paper-meta{text-align:right}
+  /* the job-market card is a single column even though it is also a .paper */
+  .paper.jmp{grid-template-columns:minmax(0,1fr)}
+}
+.papers.filtering .paper{opacity:.28}
+.papers.filtering .paper.match{opacity:1}
+
+.paper-title{
+  font-family:var(--serif);
+  font-size:1.125rem;line-height:1.3;letter-spacing:-.005em;
+  margin:0;
+}
+.paper-title a{
+  text-decoration:none;
+  background-image:linear-gradient(var(--rule-strong),var(--rule-strong));
+  background-size:100% 1px;background-position:0 1.12em;background-repeat:no-repeat;
+  transition:background-image .16s;
+}
+.paper-title a:hover{
+  background-image:linear-gradient(var(--ci),var(--ci));
+}
+.paper-authors{font-size:.875rem;color:var(--muted);margin:0}
+.paper-authors .me{color:var(--ink);font-weight:600}
+
+.paper-meta{
+  font-family:var(--mono);font-size:.6875rem;line-height:1.7;color:var(--faint);
+  display:flex;flex-direction:column;gap:.25rem;align-items:flex-start;
+}
+@media (min-width:760px){ .paper-meta{align-items:flex-end} }
+.venue{color:var(--muted)}
+.tags{display:flex;flex-wrap:wrap;gap:.3125rem}
+@media (min-width:760px){ .tags{justify-content:flex-end} }
+.tag{
+  font-family:var(--mono);font-size:.625rem;letter-spacing:.06em;
+  padding:.125rem .4375rem;border-radius:4px;border:1px solid var(--rule-strong);
+  color:var(--faint);white-space:nowrap;
+}
+.tag[data-field="ml"]{color:var(--ml);border-color:color-mix(in srgb,var(--ml) 35%,transparent);background:var(--ml-wash)}
+.tag[data-field="ci"]{color:var(--ci);border-color:color-mix(in srgb,var(--ci) 35%,transparent);background:var(--ci-wash)}
+.tag[data-field="x"]{color:var(--key);border-color:color-mix(in srgb,var(--key) 35%,transparent);background:var(--key-wash)}
+
+.links{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+@media (min-width:760px){ .links{justify-content:flex-end} }
+.links a{
+  font-family:var(--mono);font-size:.6875rem;
+  text-decoration:none;color:var(--ci);
+  border-bottom:1px solid color-mix(in srgb,var(--ci) 35%,transparent);
+  padding-bottom:1px;
+}
+.links a:hover{border-bottom-color:var(--ci)}
+.pending{
+  font-family:var(--mono);font-size:.6875rem;color:var(--faint);
+  border:1px dashed var(--rule-strong);border-radius:4px;padding:.0625rem .375rem;
+}
+
+/* --- job market paper: the one loud card --- */
+.jmp{
+  border:1px solid var(--key);
+  border-radius:14px;
+  background:linear-gradient(180deg, var(--key-wash), transparent 60%), var(--surface);
+  padding:clamp(1.25rem,3vw,1.75rem);
+  box-shadow:var(--shadow);
+  margin-bottom:1.5rem;
+  display:grid;gap:.75rem;
+}
+.jmp .jmp-tag{
+  font-family:var(--mono);font-size:.6875rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--key);display:flex;align-items:center;gap:.5rem;
+}
+.jmp h3{
+  font-size:clamp(1.375rem,3vw,1.75rem);line-height:1.2;letter-spacing:-.015em;margin:0;
+}
+.jmp h3 a{text-decoration:none;border-bottom:1px solid color-mix(in srgb,var(--key) 40%,transparent)}
+.jmp h3 a:hover{border-bottom-color:var(--key)}
+.jmp .paper-authors{font-size:.9375rem}
+.jmp-foot{display:flex;flex-wrap:wrap;gap:.875rem 1.25rem;align-items:center;margin-top:.5rem}
+.jmp-cta-slot{display:inline-flex}
+/* the single strongest call to action on the site */
+.jmp-cta{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-family:var(--sans);font-size:.875rem;font-weight:600;
+  padding:.5625rem .9375rem;
+  border:1px solid var(--key);border-radius:8px;
+  background:var(--key);color:var(--key-fg);
+  text-decoration:none;white-space:nowrap;
+  transition:transform .16s ease, box-shadow .16s ease;
+}
+.jmp-cta:hover{transform:translateY(-1px);box-shadow:var(--shadow-lift)}
+.jmp-cta svg{width:14px;height:14px;display:block;flex:none}
+.jmp-cta.is-pending{
+  background:none;color:var(--muted);
+  border:1px dashed var(--rule-strong);
+  font-family:var(--mono);font-size:.75rem;font-weight:400;
+  cursor:default;
+}
+.jmp-cta.is-pending:hover{transform:none;box-shadow:none}
+
+/* ============================================================
+   ABSTRACT CARD  (CSS-first, JS refines placement)
+   ============================================================ */
+.hasab{position:relative;display:inline-block}
+.abtrigger{
+  font-family:var(--mono);font-size:.625rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--muted);background:none;border:0;padding:0;cursor:help;
+  border-bottom:1px dotted var(--rule-strong);
+}
+.abtrigger:hover{color:var(--ink)}
+/* link-less titles get the dotted "there's more here" affordance */
+.title-static{
+  border-bottom:1px dotted var(--rule-strong);
+  cursor:help;
+}
+.card{
+  position:absolute;
+  z-index:60;
+  top:calc(100% + .5rem);
+  left:0;
+  width:min(30rem, calc(100vw - 3rem));
+  max-width:calc(100vw - 3rem);
+  background:var(--surface);
+  border:1px solid var(--rule-strong);
+  border-radius:12px;
+  box-shadow:var(--shadow-lift);
+  padding:1rem 1.125rem;
+  opacity:0;visibility:hidden;
+  transform:translateY(-4px);
+  transition:opacity .16s ease, transform .16s ease, visibility .16s;
+  text-align:left;
+  pointer-events:none;
+}
+.hasab:hover > .card,
+.hasab:focus-within > .card,
+.hasab.pinned > .card{opacity:1;visibility:visible;transform:translateY(0);pointer-events:auto}
+/* Escape dismisses even while the trigger still holds focus (must follow the rule above) */
+.hasab.dismissed > .card{opacity:0;visibility:hidden;pointer-events:none}
+.card[data-flip="up"]{top:auto;bottom:calc(100% + .5rem)}
+.card[data-flip-x="right"]{left:auto;right:0}
+.card-head{
+  display:flex;gap:.75rem;align-items:baseline;justify-content:space-between;
+  margin-bottom:.5rem;
+}
+.card-kicker{
+  font-family:var(--mono);font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);
+}
+.card-close{
+  font-family:var(--mono);font-size:.6875rem;color:var(--faint);
+  background:none;border:0;cursor:pointer;padding:.125rem .25rem;display:none;
+}
+.hasab.pinned .card-close{display:block}
+.card-authors{
+  font-family:var(--sans);font-size:.8125rem;color:var(--ink);font-weight:500;
+  margin:0 0 .5rem;line-height:1.5;
+}
+.card-authors .me{color:var(--key)}
+.card-abstract{
+  font-size:.8125rem;line-height:1.6;color:var(--muted);margin:0;
+  max-height:16rem;overflow-y:auto;
+}
+.card-abstract.todo{color:var(--faint);font-style:italic}
+.todo-flag{
+  display:inline-block;font-family:var(--mono);font-size:.5625rem;letter-spacing:.1em;
+  color:var(--key);border:1px solid color-mix(in srgb,var(--key) 40%,transparent);
+  border-radius:3px;padding:0 .25rem;margin-right:.375rem;vertical-align:1px;
+  font-style:normal;
+}
+
+/* ============================================================
+   FOOT
+   ============================================================ */
+.foot a{color:var(--ci);text-underline-offset:3px}
+.foot{
+  margin-top:clamp(3rem,6vw,5rem);
+  border-top:1px solid var(--rule);
+  padding:1.5rem 0 3rem;
+  font-family:var(--mono);font-size:.6875rem;color:var(--faint);
+  display:flex;flex-wrap:wrap;gap:.5rem 1.5rem;
+}
+.theme-toggle{
+  font-family:var(--mono);font-size:.6875rem;color:var(--faint);
+  background:none;border:1px solid var(--rule);border-radius:5px;
+  padding:.1875rem .5rem;cursor:pointer;margin-left:auto;
+}
+.theme-toggle:hover{color:var(--ink);border-color:var(--rule-strong)}
+
+/* ============================================================
+   TAB NAVIGATION  — hash-routed, so every tab is deep-linkable
+   ============================================================ */
+.tabs{
+  position:sticky;top:0;z-index:40;
+  background:var(--ground);
+  border-bottom:1px solid var(--rule);
+}
+@supports (backdrop-filter: blur(10px)){
+  .tabs{background:color-mix(in srgb, var(--ground) 86%, transparent);backdrop-filter:blur(10px)}
+}
+.tabs-inner{
+  max-width:1120px;margin:0 auto;padding:0 var(--pad);
+  display:flex;gap:.125rem;
+}
+.tab{
+  font-family:var(--sans);
+  font-size:.875rem;
+  color:var(--muted);text-decoration:none;white-space:nowrap;
+  padding:.9375rem .8125rem .8125rem;
+  border-bottom:2px solid transparent;
+  margin-bottom:-1px;
+  transition:color .16s, border-color .16s;
+}
+.tab:hover{color:var(--ink)}
+.tab[aria-current="page"]{color:var(--ink);font-weight:600;border-bottom-color:var(--ink)}
+
+.panel{display:none}
+.panel.is-active{display:block}
+
+/* ============================================================
+   CURRICULUM VITAE PANEL
+   ============================================================ */
+.cv-frame{
+  background:var(--surface);
+  border:1px solid var(--rule);
+  border-radius:14px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+/* the CV is folded away by default — the viewer is opt-in, not the page's first act */
+.cv-bar{
+  display:flex;flex-wrap:wrap;gap:.5rem .75rem;align-items:center;
+  padding:.875rem 1.25rem;
+  background:var(--surface-2);
+  border-bottom:1px solid transparent;
+  font-family:var(--mono);font-size:.75rem;color:var(--muted);
+  cursor:pointer;list-style:none;
+}
+.cv-bar::-webkit-details-marker{display:none}
+.cv-bar:hover{color:var(--ink)}
+.cv-frame[open] .cv-bar{border-bottom-color:var(--rule)}
+.cv-chev{
+  flex:none;display:block;color:var(--faint);
+  transition:transform .18s ease;
+}
+.cv-frame[open] .cv-chev{transform:rotate(90deg)}
+.cv-bar .cv-name{color:var(--ink)}
+.cv-bar .cv-toggle{margin-left:auto}
+.cv-bar .cv-toggle::after{content:"preview"}
+.cv-frame[open] .cv-bar .cv-toggle::after{content:"hide"}
+.cv-bar .cv-action a{
+  font-family:var(--mono);font-size:.6875rem;text-decoration:none;color:var(--ci);
+  border-bottom:1px solid color-mix(in srgb,var(--ci) 35%,transparent);
+}
+.cv-bar .cv-action a:hover{border-bottom-color:var(--ci)}
+.cv-viewport{
+  display:grid;place-items:center;
+  background:var(--surface-2);
+}
+.cv-viewport.has-pdf{min-height:min(76vh, 880px)}
+.cv-viewport iframe{width:100%;height:min(76vh,880px);border:0;display:block;background:var(--surface)}
+.cv-placeholder{
+  display:grid;gap:.5rem;justify-items:center;text-align:center;
+  padding:clamp(1.75rem,4vw,2.5rem) 1.5rem;
+  max-width:36rem;
+}
+.cv-ph-title{font-family:var(--serif);font-size:1.125rem;color:var(--ink);margin:0}
+.cv-ph-note{font-size:.875rem;color:var(--muted);margin:0;max-width:40ch;line-height:1.6}
+.cv-ph-note a{color:var(--ci);text-underline-offset:3px}
+
+/* ============================================================
+   HOME NAVIGATION — the two ways on from the landing page
+   ============================================================ */
+.homecards{
+  display:grid;gap:.875rem;grid-template-columns:minmax(0,1fr);
+  margin-top:clamp(1.75rem,4vw,2.5rem);
+}
+@media (min-width:720px){ .homecards{grid-template-columns:repeat(2,minmax(0,1fr))} }
+.homecard{
+  display:grid;gap:.375rem;align-content:start;
+  padding:1.25rem 1.375rem 1.125rem;
+  background:var(--surface);
+  border:1px solid var(--rule);
+  border-radius:14px;
+  box-shadow:var(--shadow);
+  text-decoration:none;
+  transition:transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+}
+.homecard:hover{transform:translateY(-2px);box-shadow:var(--shadow-lift);border-color:var(--rule-strong)}
+.hc-top{display:flex;align-items:baseline;gap:.75rem}
+.hc-title{font-family:var(--serif);font-size:1.25rem;color:var(--ink);letter-spacing:-.01em}
+.hc-count{
+  font-family:var(--mono);font-size:.6875rem;color:var(--faint);
+  margin-left:auto;font-variant-numeric:tabular-nums;
+}
+.hc-note{font-size:.875rem;line-height:1.55;color:var(--muted);max-width:40ch}
+.hc-go{
+  font-family:var(--mono);font-size:.6875rem;color:var(--ink);
+  display:inline-flex;align-items:center;gap:.4375rem;margin-top:.375rem;
+}
+.hc-go svg{width:13px;height:13px;display:block;transition:transform .16s ease}
+.homecard:hover .hc-go svg{transform:translateX(3px)}
+
+/* ============================================================
+   TEACHING PANEL
+   ============================================================ */
+/* the current course leads, but quietly — a rule, not a card */
+.teach-now{
+  border-left:2px solid var(--key);
+  padding:.0625rem 0 .0625rem 1.125rem;
+  margin:0 0 1.75rem;
+  display:grid;gap:.1875rem;
+}
+.teach-now .now-tag{
+  font-family:var(--mono);font-size:.625rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--key);margin:0;
+}
+.teach-now .now-title{
+  font-size:1.125rem;line-height:1.3;margin:0;
+}
+.teach-now .now-role{
+  font-family:var(--mono);font-size:.6875rem;color:var(--muted);margin:0;
+}
+.teach-lead{
+  font-family:var(--serif);
+  font-size:clamp(1.0625rem,1.7vw,1.1875rem);
+  line-height:1.6;color:var(--ink-soft);
+  max-width:58ch;margin:0 0 1.125rem;
+}
+.tools{display:flex;flex-wrap:wrap;gap:.375rem;margin:0 0 2.5rem;padding:0;list-style:none}
+.tools li{
+  font-family:var(--mono);font-size:.6875rem;
+  border:1px solid var(--rule-strong);border-radius:5px;
+  padding:.1875rem .5rem;color:var(--muted);
+}
+.course-group{margin:0 0 2.5rem}
+.course-group:last-child{margin-bottom:0}
+.grp-head{display:flex;align-items:baseline;gap:.875rem;margin:0 0 .875rem}
+.grp-head h3{font-size:1.0625rem;font-style:italic;font-weight:400;margin:0}
+.grp-head .count{
+  font-family:var(--mono);font-size:.6875rem;color:var(--faint);
+  margin-left:auto;font-variant-numeric:tabular-nums;
+}
+.courses{list-style:none;margin:0;padding:0}
+.course{
+  border-top:1px solid var(--rule);
+  padding:.875rem 0;
+  display:grid;gap:.1875rem .75rem;
+  grid-template-columns:minmax(0,1fr);
+}
+.courses .course:last-child{border-bottom:1px solid var(--rule)}
+@media (min-width:760px){
+  .course{grid-template-columns:minmax(0,1fr) 17rem;align-items:baseline}
+  .course-meta{text-align:right}
+}
+.course-name{font-family:var(--serif);font-size:1.0625rem;line-height:1.35;margin:0}
+.course-meta{font-family:var(--mono);font-size:.6875rem;color:var(--muted);margin:0;line-height:1.6}
+
+.flash{animation:flash 1.4s ease-out}
+@keyframes flash{
+  0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--key) 55%,transparent)}
+  100%{box-shadow:0 0 0 14px transparent}
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.001ms !important;transition-duration:.001ms !important}
+}
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ================= MASTHEAD ================= -->
+  <header class="masthead">
+    <div class="masthead-grid">
+      <div>
+        <p class="eyebrow">Job Market Candidate · 2026–27</p>
+        <h1 class="name">Haoyu Wei</h1>
+        <p class="affil">
+          Ph.D. Candidate, Department of Economics<br>
+          University of California, San Diego<br>
+          <a href="mailto:h8wei@ucsd.edu">h8wei@ucsd.edu</a>
+        </p>
+      </div>
+      <figure class="portrait" id="portrait">
+        <!-- Shown until HW.JPG is found next to this page (see ASSETS in the script). -->
+        <div class="portrait-frame" id="portrait-frame">
+          <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+            <circle cx="32" cy="24" r="11" fill="none" stroke="currentColor" stroke-width="2"/>
+            <path d="M11 58c0-11.6 9.4-21 21-21s21 9.4 21 21" fill="none" stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </div>
+      </figure>
+
+      <p class="thesis">
+        My work is on <em>semiparametric inference</em> — deriving efficiency bounds and
+        influence functions, and building multiply robust estimators that attain
+        them — for difference-in-differences, causal mediation, graphical models, and
+        off-policy evaluation.
+      </p>
+    </div>
+  </header>
+
+</div>
+
+<!-- ================= TABS ================= -->
+<nav class="tabs" aria-label="Sections">
+  <div class="tabs-inner">
+    <a class="tab" href="#home" data-tab="home">Home</a>
+    <a class="tab" href="#research" data-tab="research">Research</a>
+    <a class="tab" href="#teaching" data-tab="teaching">Teaching</a>
+  </div>
+</nav>
+
+<div class="shell">
+
+  <!-- ================= HOME ================= -->
+  <div class="panel" id="panel-home">
+    <section class="section" aria-labelledby="cv-h">
+      <div class="sec-head">
+        <svg class="stair" width="26" height="14" viewBox="0 0 26 14" aria-hidden="true">
+        <path d="M0 13h6V9h6V5h6V1h7" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+        <h2 id="cv-h">Curriculum vitae</h2>
+      </div>
+      <p class="sec-note">The full CV, with references and complete paper list.</p>
+
+      <details class="cv-frame" id="cv-details">
+        <summary class="cv-bar">
+          <svg class="cv-chev" width="10" height="10" viewBox="0 0 10 10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 1.5L7 5l-3.5 3.5"/></svg>
+          <span class="cv-name" id="cv-name">HW_CV.pdf</span>
+          <span class="cv-toggle"></span>
+          <span class="cv-action" id="cv-action"><span class="pending">not yet posted</span></span>
+        </summary>
+        <div class="cv-viewport" id="cv-viewport">
+          <!-- Shown until HW_CV.pdf is found next to this page (see ASSETS in the script). -->
+          <div class="cv-placeholder">
+            <p class="cv-ph-title">CV in preparation</p>
+            <p class="cv-ph-note">
+              It will be posted here shortly. In the meantime, please write to
+              <a href="mailto:h8wei@ucsd.edu">h8wei@ucsd.edu</a> for the current version.
+            </p>
+          </div>
+        </div>
+      </details>
+
+      <nav class="homecards" aria-label="Sections">
+        <a class="homecard" href="#research">
+          <span class="hc-top">
+            <span class="hc-title">Research</span>
+            <span class="hc-count" id="hc-papers"></span>
+          </span>
+          <span class="hc-note">
+            A map of where the work sits, the job market paper, and the full list —
+            filterable by topic.
+          </span>
+          <span class="hc-go">Go to Research <svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 8h11M9.5 4l4 4-4 4"/></svg></span>
+        </a>
+        <a class="homecard" href="#teaching">
+          <span class="hc-top">
+            <span class="hc-title">Teaching</span>
+            <span class="hc-count" id="hc-courses"></span>
+          </span>
+          <span class="hc-note">
+            Instructor of record for ECON 120B this fall, with Ph.D. and
+            upper-division undergraduate teaching before it.
+          </span>
+          <span class="hc-go">Go to Teaching <svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 8h11M9.5 4l4 4-4 4"/></svg></span>
+        </a>
+      </nav>
+    </section>
+  </div>
+
+  <!-- ================= RESEARCH ================= -->
+  <div class="panel" id="panel-research">
+
+  <!-- ================= RESEARCH MAP ================= -->
+  <section class="section" aria-labelledby="map-h">
+    <div class="sec-head">
+      <svg class="stair" width="26" height="14" viewBox="0 0 26 14" aria-hidden="true">
+        <path d="M0 13h6V9h6V5h6V1h7" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+      <h2 id="map-h">Research map</h2>
+    </div>
+    <p class="sec-note">
+      Two literatures, one method. The three papers in the middle are where they meet.
+    </p>
+
+    <div class="map-wrap">
+      <div class="map-head">
+        <h3>Where the papers sit</h3>
+        <p class="map-hint">hover a paper to see the topics it draws on</p>
+      </div>
+
+      <div class="map-scroll">
+        <div class="map" id="map">
+
+          <div class="band-rule band-rule--ci">
+            <span class="band-label">Causal Inference</span>
+          </div>
+
+          <div class="spine">
+            <div class="mapnode">
+              <button class="keystone" data-scroll="jmp-paper" type="button" aria-describedby="tp-jmp">
+                <span class="k-tag">★ Job market paper</span>
+                <span class="k-title">Simultaneous Targeted Estimation of Difference-in-Differences with Time-Varying Covariates and Staggered Adoption</span>
+                <span class="k-authors"><span class="me">Haoyu Wei</span>, Yuhao Deng, Yixiao Sun</span>
+              </button>
+              <div class="topics-pop" id="tp-jmp" role="tooltip">
+                <div class="tp-row tp-row--ci">
+                  <span class="tp-label">Causal inference</span>
+                  <span class="tp-chips">
+                    <span class="pill tlabel">Semiparametric efficiency</span>
+                    <span class="pill tlabel">Staggered DiD</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="spine-row">
+              <div class="mapnode">
+                <button class="spine-node" data-scroll="nested-paper" type="button" aria-describedby="tp-nested">
+                  <span class="k-tag">Cross-field</span>
+                  <span class="k-title">Recursive-Head Geometry and Order-Free Efficient Inference in Finite-State Nested Markov Models</span>
+                  <!-- TODO(2/3): replace author list (mirrors the list entry below) -->
+                  <span class="k-authors"><span class="me">Haoyu Wei</span></span>
+                </button>
+                <div class="topics-pop" id="tp-nested" role="tooltip">
+                  <div class="tp-row tp-row--ci">
+                    <span class="tp-label">Causal inference</span>
+                    <span class="tp-chips">
+                      <span class="pill tlabel">Causal graphs</span>
+                      <span class="pill tlabel">Semiparametric efficiency</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mapnode">
+                <button class="spine-node" data-scroll="ope-paper" type="button" aria-describedby="tp-ope">
+                  <span class="k-tag">Cross-field</span>
+                  <span class="k-title">Semiparametric Off-Policy Inference for Optimal Policy Values under Possible Non-Uniqueness</span>
+                  <span class="k-authors"><span class="me">Haoyu Wei</span></span>
+                </button>
+                <div class="topics-pop" id="tp-ope" role="tooltip">
+                  <div class="tp-row tp-row--ci">
+                    <span class="tp-label">Causal inference</span>
+                    <span class="tp-chips">
+                      <span class="pill tlabel">Semiparametric efficiency</span>
+                    </span>
+                  </div>
+                  <div class="tp-row tp-row--ml">
+                    <span class="tp-label">Machine learning</span>
+                    <span class="tp-chips">
+                      <span class="pill tlabel">MDP &amp; off-policy evaluation</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="band-rule band-rule--ml">
+            <span class="band-label">Machine Learning</span>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="map-legend">
+        <b><i class="swatch" style="background:var(--ci)"></i> Causal inference</b>
+        <b><i class="swatch" style="background:var(--ml)"></i> Machine learning</b>
+        <b><i class="swatch" style="background:var(--key)"></i> Cross-field</b>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= TOPIC FILTER ================= -->
+  <div class="filterwrap">
+    <div class="filterbar">
+      <div class="fb-head">
+        <p class="fb-title" id="fb-title">Filter by topic</p>
+        <p class="fb-status">
+          <span id="fb-count"></span>
+          <button class="fb-clear" id="fb-clear" type="button" hidden>clear</button>
+        </p>
+      </div>
+
+      <div class="fb-group fb-group--ci">
+        <span class="fb-label">Causal inference</span>
+        <div class="fb-chips" role="group" aria-label="Filter by causal inference topic">
+          <button class="pill" data-topic="semiparam" aria-pressed="false" type="button">Semiparametric efficiency <span class="n"></span></button>
+          <button class="pill" data-topic="did" aria-pressed="false" type="button">Staggered DiD <span class="n"></span></button>
+          <button class="pill" data-topic="mediation" aria-pressed="false" type="button">Causal mediation <span class="n"></span></button>
+          <button class="pill" data-topic="graphs" aria-pressed="false" type="button">Causal graphs <span class="n"></span></button>
+          <button class="pill" data-topic="separable" aria-pressed="false" type="button">Separable &amp; pathway effects <span class="n"></span></button>
+        </div>
+      </div>
+
+      <div class="fb-group fb-group--ml">
+        <span class="fb-label">Machine learning</span>
+        <div class="fb-chips" role="group" aria-label="Filter by machine learning topic">
+          <button class="pill" data-topic="concentration" aria-pressed="false" type="button">Concentration inequalities <span class="n"></span></button>
+          <button class="pill" data-topic="highdim" aria-pressed="false" type="button">High-dimensional inference <span class="n"></span></button>
+          <button class="pill" data-topic="bandits" aria-pressed="false" type="button">Bandits &amp; exploration <span class="n"></span></button>
+          <button class="pill" data-topic="mdp" aria-pressed="false" type="button">MDP &amp; off-policy evaluation <span class="n"></span></button>
+          <button class="pill" data-topic="tensor" aria-pressed="false" type="button">Tensor methods <span class="n"></span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= SELECTED WORKING PAPERS ================= -->
+  <section class="section" aria-labelledby="wp-h">
+    <div class="sec-head">
+      <svg class="stair" width="26" height="14" viewBox="0 0 26 14" aria-hidden="true">
+        <path d="M0 13h6V9h6V5h6V1h7" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+      <h2 id="wp-h">Selected working papers</h2>
+      <span class="count" id="wp-count"></span>
+    </div>
+    <p class="sec-note">
+      Hover or tap a title without a public link to see authors and abstract.
+    </p>
+
+    <!-- ---- the job market paper, nested at the top ---- -->
+    <article class="jmp paper match" id="jmp-paper" data-topics="did semiparam">
+      <p class="jmp-tag">★ Job market paper</p>
+      <h3>
+        <span class="hasab">
+          <span class="title-static" tabindex="0" role="button" aria-describedby="ab-jmp">Simultaneous Targeted Estimation of Difference-in-Differences with Time-Varying Covariates and Staggered Adoption</span>
+          <span class="card" id="ab-jmp" role="tooltip">
+            <span class="card-head">
+              <span class="card-kicker">Job market paper</span>
+              <button class="card-close" type="button" aria-label="Close">esc ✕</button>
+            </span>
+            <p class="card-authors"><span class="me">Haoyu Wei</span>, Yuhao Deng, Yixiao Sun</p>
+            <!-- TODO(1/3): replace abstract -->
+            <p class="card-abstract todo"><span class="todo-flag">TODO</span>Paste the job market paper abstract here. Until then this placeholder is what visitors will read.</p>
+          </span>
+        </span>
+      </h3>
+      <p class="paper-authors"><span class="me">Haoyu Wei</span>, Yuhao Deng, Yixiao Sun</p>
+      <div class="jmp-foot">
+        <span class="jmp-cta-slot" id="jmp-link">
+          <span class="jmp-cta is-pending">The draft will appear soon</span>
+        </span>
+        <span class="tags">
+          <span class="tag" data-field="x">cross-field</span>
+          <span class="tag" data-field="ci">staggered DiD</span>
+          <span class="tag" data-field="ci">semiparametric</span>
+        </span>
+      </div>
+    </article>
+
+    <ol class="papers" id="wp-list">
+
+      <li class="paper" id="nested-paper" data-topics="graphs semiparam">
+        <div>
+          <h3 class="paper-title">
+            <span class="hasab">
+              <span class="title-static" tabindex="0" role="button" aria-describedby="ab-nested">Recursive-Head Geometry and Order-Free Efficient Inference in Finite-State Nested Markov Models</span>
+              <span class="card" id="ab-nested" role="tooltip">
+                <span class="card-head"><span class="card-kicker">Working paper</span>
+                <button class="card-close" type="button" aria-label="Close">esc ✕</button></span>
+                <!-- TODO(2/3): replace author list -->
+                <p class="card-authors"><span class="me">Haoyu Wei</span></p>
+                <!-- TODO(2/3): replace abstract -->
+                <p class="card-abstract todo"><span class="todo-flag">TODO</span>Paste the abstract for “Recursive-Head Geometry and Order-Free Efficient Inference in Finite-State Nested Markov Models” here.</p>
+              </span>
+            </span>
+          </h3>
+          <p class="paper-authors"><span class="me">Haoyu Wei</span></p>
+        </div>
+        <div class="paper-meta">
+          <span class="venue">Working paper</span>
+          <span class="links"><span class="pending">draft in progress</span></span>
+          <span class="tags">
+            <span class="tag" data-field="x">cross-field</span>
+            <span class="tag" data-field="ci">causal graphs</span>
+          </span>
+        </div>
+      </li>
+
+      <li class="paper" id="ope-paper" data-topics="mdp semiparam">
+        <div>
+          <h3 class="paper-title">
+            <a href="https://arxiv.org/abs/2505.13809" target="_blank" rel="noopener">Semiparametric Off-Policy Inference for Optimal Policy Values under Possible Non-Uniqueness</a>
+          </h3>
+          <p class="paper-authors"><span class="me">Haoyu Wei</span></p>
+          <span class="hasab">
+            <button class="abtrigger" type="button" aria-describedby="ab-ope">Abstract</button>
+            <span class="card" id="ab-ope" role="tooltip">
+              <span class="card-head"><span class="card-kicker">arXiv:2505.13809</span>
+              <button class="card-close" type="button" aria-label="Close">esc ✕</button></span>
+              <p class="card-authors"><span class="me">Haoyu Wei</span></p>
+              <p class="card-abstract">Off-policy evaluation (OPE) constructs confidence intervals for the value of a target policy using data generated under a different behavior policy. Most existing inference methods focus on fixed target policies and may fail when the target policy is estimated as optimal, particularly when the optimal policy is non-unique or nearly deterministic. We study inference for the value of optimal policies in Markov decision processes. In an auxiliary augmented transition-sampling experiment, we characterize the existence of the efficient influence function and show that non-regularity arises when competing optimal policies have distinct first-order gradients. For the actual i.i.d.-trajectory experiment, we derive the semiparametric efficiency bound and a uniformly weighted estimator that attains it under a unique optimum, while the sequential NSAVE procedure trades efficiency for stability and validity under non-uniqueness. Motivated by this analysis, we propose a novel Nonparametric SequentiAl Value Evaluation (NSAVE) method, which yields martingale-based inference and retains a double-robustness property under policy-aligned nuisance estimation. We further develop a pointwise smoothing-based approximation under explicit first-stage rates, and a post-selection template with uniform coverage whenever its stated joint calibration condition is satisfied. Simulation studies support the theoretical results. An application to the Drink Less micro-randomized trial provides confidence intervals for state-adaptive notification policies and their improvement over the randomized behavior policy.</p>
+            </span>
+          </span>
+        </div>
+        <div class="paper-meta">
+          <span class="venue">R&amp;R</span>
+          <span class="links"><a href="https://arxiv.org/abs/2505.13809" target="_blank" rel="noopener">arXiv</a></span>
+          <span class="tags">
+            <span class="tag" data-field="x">cross-field</span>
+            <span class="tag" data-field="ml">off-policy eval</span>
+          </span>
+        </div>
+      </li>
+
+      <li class="paper" id="didmed-paper" data-topics="did mediation mdp">
+        <div>
+          <h3 class="paper-title">
+            <a href="https://arxiv.org/abs/2604.24049" target="_blank" rel="noopener">Difference-in-Differences with a Mediator</a>
+          </h3>
+          <p class="paper-authors">Yuhao Deng, <span class="me">Haoyu Wei</span>, Zhongzhe Ouyang</p>
+          <span class="hasab">
+            <button class="abtrigger" type="button" aria-describedby="ab-didmed">Abstract</button>
+            <span class="card" id="ab-didmed" role="tooltip">
+              <span class="card-head"><span class="card-kicker">arXiv:2604.24049</span>
+              <button class="card-close" type="button" aria-label="Close">esc ✕</button></span>
+              <p class="card-authors">Yuhao Deng, <span class="me">Haoyu Wei</span>, Zhongzhe Ouyang</p>
+              <p class="card-abstract">Causal mediation analysis is a powerful tool for disentangling the total effect of a treatment into its direct effect on the outcome and its indirect effect mediated through an intermediate variable. However, in observational studies, confounding between treatment and potential outcomes typically renders the total and natural effects non-identifiable. In this work, we advance mediation analysis within the difference-in-differences framework. Under a mediator-adjusted parallel trends assumption and additional conditions, we demonstrate that natural indirect, direct, and total effects are identifiable in the treated group. We further derive efficient influence functions for these estimands, enabling the construction of multiply robust and nonparametrically efficient estimators. We establish the asymptotic properties of these estimators. Applying our methodology to data from the Job Corps Study, we find that job training significantly increases both short-term and long-term earnings, after controlling for the indirect effect through the proportion of weeks employed.</p>
+            </span>
+          </span>
+        </div>
+        <div class="paper-meta">
+          <span class="venue">Working paper</span>
+          <span class="links"><a href="https://arxiv.org/abs/2604.24049" target="_blank" rel="noopener">arXiv</a></span>
+          <span class="tags">
+            <span class="tag" data-field="ci">staggered DiD</span>
+            <span class="tag" data-field="ci">causal mediation</span>
+          </span>
+        </div>
+      </li>
+
+      <li class="paper" data-topics="separable semiparam">
+        <div>
+          <h3 class="paper-title">
+            <a href="https://arxiv.org/abs/2608.22608" target="_blank" rel="noopener">Estimating Pathway Treatment Effects in the Presence of Intermediate Events with Multi-State Data</a>
+          </h3>
+          <p class="paper-authors">Yuhao Deng, <span class="me">Haoyu Wei</span>, Donglin Zeng, Rui Song, Xiao-Hua Zhou</p>
+          <span class="hasab">
+            <button class="abtrigger" type="button" aria-describedby="ab-path">Abstract</button>
+            <span class="card" id="ab-path" role="tooltip">
+              <span class="card-head"><span class="card-kicker">arXiv:2608.22608</span>
+              <button class="card-close" type="button" aria-label="Close">esc ✕</button></span>
+              <p class="card-authors">Yuhao Deng, <span class="me">Haoyu Wei</span>, Donglin Zeng, Rui Song, Xiao-Hua Zhou</p>
+              <p class="card-abstract">During clinical trials evaluating a drug&rsquo;s effect on a survival endpoint, intermediate events often occur in addition to the primary event. The treatment can exert its effect on the primary endpoint along multiple pathways through intermediate events. Assumptions for identifying mediation effects, such as sequential ignorability in natural effects or the dismissible components condition in separable effects, fail because intermediate events act as treatment-induced confounding. To understand the effect along each pathway, we consider hypothetical interventions in transitions between event statuses to mimic the treatment mechanism. The hypothetical interventions adjust for effects through intermediate events and marginalize over unobserved treatment-induced confounding, if any. Based on the derived efficient influence functions for the counterfactual cumulative incidences under hypothetical interventions, we construct multiply robust and semiparametrically efficient estimators for pathway treatment effects. Our proposed framework enables the examination of treatment effects through each transition, on each event, and along each path. By analyzing data from the LEADER Trial, we find that liraglutide significantly reduces the risk of cardiovascular and microvascular events. The reduction in all-cause mortality is primarily mediated by its effects on expanded major adverse cardiovascular events.</p>
+            </span>
+          </span>
+        </div>
+        <div class="paper-meta">
+          <span class="venue">Presented at Lifetime Data Analysis, 2025</span>
+          <span class="links"><a href="https://arxiv.org/abs/2608.22608" target="_blank" rel="noopener">arXiv</a></span>
+          <span class="tags">
+            <span class="tag" data-field="ci">pathway effects</span>
+            <span class="tag" data-field="ci">multi-state</span>
+          </span>
+        </div>
+      </li>
+
+    </ol>
+  </section>
+
+  <!-- ================= SELECTED PUBLICATIONS ================= -->
+  <section class="section" aria-labelledby="pub-h">
+    <div class="sec-head">
+      <svg class="stair" width="26" height="14" viewBox="0 0 26 14" aria-hidden="true">
+        <path d="M0 13h6V9h6V5h6V1h7" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+      <h2 id="pub-h">Selected publications</h2>
+      <span class="count" id="pub-count"></span>
+    </div>
+
+    <ol class="papers" id="pub-list">
+
+      <li class="paper" data-topics="highdim concentration">
+        <div>
+          <h3 class="paper-title">
+            <a href="https://arxiv.org/abs/2202.05612" target="_blank" rel="noopener">High-dimensional Inference and FDR Control for Simulated Markov Random Fields</a>
+          </h3>
+          <p class="paper-authors"><span class="me">Haoyu Wei</span>, Xiaoyu Lei, Yixin Han, Huiming Zhang</p>
+          <span class="hasab">
+            <button class="abtrigger" type="button" aria-describedby="ab-mrf">Abstract</button>
+            <span class="card" id="ab-mrf" role="tooltip">
+              <span class="card-head"><span class="card-kicker">Statistics and Its Interface</span>
+              <button class="card-close" type="button" aria-label="Close">esc ✕</button></span>
+              <p class="card-authors"><span class="me">Haoyu Wei</span>, Xiaoyu Lei, Yixin Han, Huiming Zhang</p>
+              <p class="card-abstract">Identifying important features linked to a response variable is a fundamental task in various scientific domains. This article explores statistical inference for simulated Markov random fields in high-dimensional settings. We introduce a methodology based on Markov Chain Monte Carlo Maximum Likelihood Estimation (MCMC-MLE) with Elastic-net regularization. Under mild conditions on the MCMC method, our penalized MCMC-MLE method achieves ℓ₁-consistency. We propose a decorrelated score test, establishing both its asymptotic normality and that of a one-step estimator, along with the associated confidence interval. Furthermore, we construct two false discovery rate control procedures via the asymptotic behaviors for both p-values and e-values. Comprehensive numerical simulations confirm the theoretical validity of the proposed methods.</p>
+            </span>
+          </span>
+        </div>
+        <div class="paper-meta">
+          <span class="venue">Statistics and Its Interface, 19(3), 2026</span>
+          <span class="links">
+            <a href="https://doi.org/10.4310/SII.260602005242" target="_blank" rel="noopener">journal</a>
+            <a href="https://arxiv.org/abs/2202.05612" target="_blank" rel="noopener">arXiv</a>
+          </span>
+          <span class="tags">
+            <span class="tag" data-field="ml">high-dimensional</span>
+            <span class="tag" data-field="ml">FDR control</span>
+          </span>
+        </div>
+      </li>
+
+      <li class="paper" data-topics="bandits">
+        <div>
+          <h3 class="paper-title">
+            <a href="https://arxiv.org/abs/2312.15595" target="_blank" rel="noopener">Zero-Inflated Bandits</a>
+          </h3>
+          <p class="paper-authors"><span class="me">Haoyu Wei</span>, Runzhe Wan, Lei Shi, Rui Song</p>
+          <span class="hasab">
+            <button class="abtrigger" type="button" aria-describedby="ab-zib">Abstract</button>
+            <span class="card" id="ab-zib" role="tooltip">
+              <span class="card-head"><span class="card-kicker">ICML 2025</span>
+              <button class="card-close" type="button" aria-label="Close">esc ✕</button></span>
+              <p class="card-authors"><span class="me">Haoyu Wei</span>, Runzhe Wan, Lei Shi, Rui Song</p>
+              <p class="card-abstract">Many real-world bandit applications are characterized by sparse rewards, which can significantly hinder learning efficiency. Leveraging problem-specific structures for careful distribution modeling is recognized as essential for improving estimation efficiency in statistics. However, this approach remains under-explored in the context of bandits. To address this gap, we initiate the study of zero-inflated bandits, where the reward is modeled using a classic semi-parametric distribution known as the zero-inflated distribution. We develop algorithms based on the Upper Confidence Bound and Thompson Sampling frameworks for this specific structure. The superior empirical performance of these methods is demonstrated through extensive numerical studies.</p>
+            </span>
+          </span>
+        </div>
+        <div class="paper-meta">
+          <span class="venue">ICML 2025</span>
+          <span class="links">
+            <a href="https://icml.cc/virtual/2025/poster/46013" target="_blank" rel="noopener">proceedings</a>
+            <a href="https://arxiv.org/abs/2312.15595" target="_blank" rel="noopener">arXiv</a>
+          </span>
+          <span class="tags"><span class="tag" data-field="ml">bandits</span></span>
+        </div>
+      </li>
+
+      <li class="paper" data-topics="bandits">
+        <div>
+          <h3 class="paper-title">
+            <a href="https://proceedings.mlr.press/v202/wan23d.html" target="_blank" rel="noopener">Multiplier Bootstrap-based Exploration</a>
+          </h3>
+          <p class="paper-authors">Runzhe Wan, <span class="me">Haoyu Wei</span>, Branislav Kveton, Rui Song</p>
+          <span class="hasab">
+            <button class="abtrigger" type="button" aria-describedby="ab-mbe">Abstract</button>
+            <span class="card" id="ab-mbe" role="tooltip">
+              <span class="card-head"><span class="card-kicker">ICML 2023</span>
+              <button class="card-close" type="button" aria-label="Close">esc ✕</button></span>
+              <p class="card-authors">Runzhe Wan, <span class="me">Haoyu Wei</span>, Branislav Kveton, Rui Song</p>
+              <p class="card-abstract">Despite the great interest in the bandit problem, designing efficient algorithms for complex models remains challenging, as there is typically no analytical way to quantify uncertainty. In this paper, we propose Multiplier Bootstrap-based Exploration (MBE), a novel exploration strategy that is applicable to any reward model amenable to weighted loss minimization. We prove both instance-dependent and instance-independent rate-optimal regret bounds for MBE in sub-Gaussian multi-armed bandits. With extensive simulation and real data experiments, we show the generality and adaptivity of MBE.</p>
+            </span>
+          </span>
+        </div>
+        <div class="paper-meta">
+          <span class="venue">ICML 2023 · PMLR 202</span>
+          <span class="links">
+            <a href="https://proceedings.mlr.press/v202/wan23d.html" target="_blank" rel="noopener">proceedings</a>
+            <a href="https://arxiv.org/abs/2302.01543" target="_blank" rel="noopener">arXiv</a>
+          </span>
+          <span class="tags"><span class="tag" data-field="ml">bandits</span></span>
+        </div>
+      </li>
+
+      <li class="paper" data-topics="concentration">
+        <div>
+          <h3 class="paper-title">
+            <a href="https://doi.org/10.3390/math10132252" target="_blank" rel="noopener">Sharper Sub-Weibull Concentrations</a>
+          </h3>
+          <p class="paper-authors">Huiming Zhang, <span class="me">Haoyu Wei</span></p>
+          <span class="hasab">
+            <button class="abtrigger" type="button" aria-describedby="ab-sw">Abstract</button>
+            <span class="card" id="ab-sw" role="tooltip">
+              <span class="card-head"><span class="card-kicker">Mathematics, 2022</span>
+              <button class="card-close" type="button" aria-label="Close">esc ✕</button></span>
+              <p class="card-authors">Huiming Zhang, <span class="me">Haoyu Wei</span></p>
+              <p class="card-abstract">Constant-specified and exponential concentration inequalities play an essential role in the finite-sample theory of machine learning and high-dimensional statistics. We obtain sharper and constants-specified concentration inequalities for the sum of independent sub-Weibull random variables, which leads to a mixture of two tails: sub-Gaussian for small deviations and sub-Weibull for large deviations from the mean. These bounds are new and improve existing bounds with sharper constants. In addition, a new sub-Weibull parameter is proposed, which enables recovering the tight concentration inequality for a random variable (vector). For statistical applications, we give an ℓ₂-error of estimated coefficients in negative binomial regressions when the heavy-tailed covariates are sub-Weibull distributed with sparse structures. In applying random matrices, we derive non-asymptotic versions of Bai–Yin&rsquo;s theorem for sub-Weibull entries with exponential tail bounds. Finally, by demonstrating a sub-Weibull confidence region for a log-truncated Z-estimator without the second-moment condition, we discuss and define the sub-Weibull type robust estimator for independent observations without exponential-moment conditions.</p>
+            </span>
+          </span>
+        </div>
+        <div class="paper-meta">
+          <span class="venue">Mathematics, 10(13):2252, 2022</span>
+          <span class="links">
+            <a href="https://doi.org/10.3390/math10132252" target="_blank" rel="noopener">journal</a>
+            <a href="https://arxiv.org/abs/2102.02450" target="_blank" rel="noopener">arXiv</a>
+          </span>
+          <span class="tags"><span class="tag" data-field="ml">concentration</span></span>
+        </div>
+      </li>
+
+    </ol>
+  </section>
+
+  <!-- ================= WORK IN PROGRESS ================= -->
+  <section class="section" aria-labelledby="wip-h">
+    <div class="sec-head">
+      <svg class="stair" width="26" height="14" viewBox="0 0 26 14" aria-hidden="true">
+        <path d="M0 13h6V9h6V5h6V1h7" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+      <h2 id="wip-h">Work in progress</h2>
+      <span class="count" id="wip-count"></span>
+    </div>
+
+    <ol class="papers" id="wip-list">
+
+      <li class="paper" data-topics="mediation graphs semiparam">
+        <div>
+          <h3 class="paper-title">
+            <a href="https://arxiv.org/abs/2401.05517" target="_blank" rel="noopener">On Efficient Inference of Causal Effects with Multiple Mediators</a>
+          </h3>
+          <p class="paper-authors"><span class="me">Haoyu Wei</span>, Hengrui Cai, Chengchun Shi, Rui Song</p>
+          <span class="hasab">
+            <button class="abtrigger" type="button" aria-describedby="ab-mm">Abstract</button>
+            <span class="card" id="ab-mm" role="tooltip">
+              <span class="card-head"><span class="card-kicker">arXiv:2401.05517</span>
+              <button class="card-close" type="button" aria-label="Close">esc ✕</button></span>
+              <p class="card-authors"><span class="me">Haoyu Wei</span>, Hengrui Cai, Chengchun Shi, Rui Song</p>
+              <p class="card-abstract">This paper provides robust estimators and efficient inference of causal effects involving multiple interacting mediators. Most existing works either impose a linear model assumption among the mediators or are restricted to handle conditionally independent mediators given the exposure. To overcome these limitations, we define causal and individual mediation effects in a general setting, and employ a semiparametric framework to develop quadruply robust estimators for these causal effects. We further establish the asymptotic normality of the proposed estimators and prove their local semiparametric efficiencies. The proposed method is empirically validated via simulated and real datasets concerning psychiatric disorders in trauma survivors.</p>
+            </span>
+          </span>
+        </div>
+        <div class="paper-meta">
+          <span class="links"><a href="https://arxiv.org/abs/2401.05517" target="_blank" rel="noopener">arXiv</a></span>
+          <span class="tags">
+            <span class="tag" data-field="ci">causal mediation</span>
+            <span class="tag" data-field="ci">causal graphs</span>
+          </span>
+        </div>
+      </li>
+
+      <li class="paper" data-topics="tensor highdim">
+        <div>
+          <h3 class="paper-title">
+            <span class="hasab">
+              <span class="title-static" tabindex="0" role="button" aria-describedby="ab-cp">Convergence of CP Decomposition for Heterogeneous Tabular Data</span>
+              <span class="card" id="ab-cp" role="tooltip">
+                <span class="card-head"><span class="card-kicker">Work in progress</span>
+                <button class="card-close" type="button" aria-label="Close">esc ✕</button></span>
+                <p class="card-authors">Joint work with Joshua Cape, David Hong, and Yuxiao Lei</p>
+                <!-- TODO(3/3): replace abstract -->
+                <p class="card-abstract todo"><span class="todo-flag">TODO</span>Paste the abstract for “Convergence of CP Decomposition for Heterogeneous Tabular Data” here.</p>
+              </span>
+            </span>
+          </h3>
+          <p class="paper-authors">Joint work with Joshua Cape, David Hong, and Yuxiao Lei</p>
+        </div>
+        <div class="paper-meta">
+          <span class="links"><span class="pending">in preparation</span></span>
+          <span class="tags">
+            <span class="tag" data-field="ml">tensor</span>
+            <span class="tag" data-field="ml">high-dimensional</span>
+          </span>
+        </div>
+      </li>
+
+    </ol>
+  </section>
+
+  </div><!-- /panel-research -->
+
+  <!-- ================= TEACHING ================= -->
+  <div class="panel" id="panel-teaching">
+    <section class="section" aria-labelledby="teach-h">
+      <div class="sec-head">
+        <svg class="stair" width="26" height="14" viewBox="0 0 26 14" aria-hidden="true">
+        <path d="M0 13h6V9h6V5h6V1h7" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+        <h2 id="teach-h">Teaching experience</h2>
+        <span class="count" id="teach-count">9 courses</span>
+      </div>
+
+      <div class="teach-now">
+        <p class="now-tag">Current · Fall 2026</p>
+        <h3 class="now-title">ECON 120B — Econometrics</h3>
+        <p class="now-role">Associate-In (instructor of record), UC San Diego</p>
+      </div>
+
+      <p class="teach-lead">
+        As a teaching assistant I led discussion and review sessions, held weekly office
+        hours, assisted in preparing exams and problem sets, and graded exams and
+        assignments.
+      </p>
+      <ul class="tools">
+        <li>Stata</li>
+        <li>R</li>
+      </ul>
+
+      <div class="course-group">
+        <div class="grp-head">
+          <h3>Teaching assistant — Ph.D.-level courses</h3>
+          <span class="count">3</span>
+        </div>
+        <ol class="courses">
+          <li class="course">
+            <p class="course-name">Econometrics 220C</p>
+            <p class="course-meta">Prof. Yixiao Sun</p>
+          </li>
+          <li class="course">
+            <p class="course-name">Advanced Multivariate Statistical Analysis</p>
+            <p class="course-meta">Prof. Songxi Chen</p>
+          </li>
+          <li class="course">
+            <p class="course-name">Asymptotic Statistics</p>
+            <p class="course-meta">Prof. Songxi Chen</p>
+          </li>
+        </ol>
+      </div>
+
+      <div class="course-group">
+        <div class="grp-head">
+          <h3>Teaching assistant — upper-division undergraduate courses</h3>
+          <span class="count">5</span>
+        </div>
+        <ol class="courses">
+          <li class="course">
+            <p class="course-name">Econometrics 120B and 120C</p>
+            <p class="course-meta">Dr. Maria Candido · Prof. Yixiao Sun</p>
+          </li>
+          <li class="course">
+            <p class="course-name">Economic &amp; Business Forecasting</p>
+            <p class="course-meta">Prof. Ying Zhu</p>
+          </li>
+          <li class="course">
+            <p class="course-name">Time Series</p>
+            <p class="course-meta">Dr. Ioannis Papastathopoulos</p>
+          </li>
+          <li class="course">
+            <p class="course-name">Probability and Statistics for Engineers</p>
+            <p class="course-meta">Prof. Donald E. K. Martin</p>
+          </li>
+          <li class="course">
+            <p class="course-name">Introduction to Survey Sampling &amp; Statistical Methods for Quality and Productivity Improvement</p>
+            <p class="course-meta">Prof. Logan J. Opperman</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+  </div><!-- /panel-teaching -->
+
+  <footer class="foot">
+    <span>Haoyu Wei · UC San Diego</span>
+    <span><a href="mailto:h8wei@ucsd.edu">h8wei@ucsd.edu</a></span>
+    <span><a href="https://scholar.google.com/citations?user=PxgSlKIAAAAJ" target="_blank" rel="noopener">Google Scholar</a></span>
+    <button class="theme-toggle" id="theme-toggle" type="button">theme</button>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- theme toggle (three-state aware) ---------- */
+  var root = document.documentElement;
+  try{
+    var saved = localStorage.getItem("hw-theme");
+    if(saved === "dark" || saved === "light") root.setAttribute("data-theme", saved);
+  }catch(e){}
+  var tt = document.getElementById("theme-toggle");
+  if(tt) tt.addEventListener("click", function(){
+    var isDark = root.getAttribute("data-theme") === "dark" ||
+      (!root.hasAttribute("data-theme") && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    var next = isDark ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    try{ localStorage.setItem("hw-theme", next); }catch(e){}
+    restCards();
+  });
+
+  /* ---------- topic counts ---------- */
+  var allPapers = Array.prototype.slice.call(document.querySelectorAll(".paper"));
+  function countTopic(t){
+    return allPapers.filter(function(p){
+      return (p.getAttribute("data-topics") || "").split(/\s+/).indexOf(t) > -1;
+    }).length;
+  }
+  Array.prototype.forEach.call(document.querySelectorAll(".pill"), function(pill){
+    var n = pill.querySelector(".n");
+    if(n) n.textContent = countTopic(pill.getAttribute("data-topic"));
+  });
+  var courseCount = document.querySelectorAll(".courses .course").length +
+                    (document.querySelector(".teach-now") ? 1 : 0);
+  var hcP = document.getElementById("hc-papers");
+  var hcC = document.getElementById("hc-courses");
+  var teachCount = document.getElementById("teach-count");
+  if(hcP) hcP.textContent = allPapers.length + " papers";
+  if(hcC) hcC.textContent = courseCount + " courses";
+  if(teachCount) teachCount.textContent = courseCount + " courses";
+
+  [["wp-count", "#wp-list .paper", 1],
+   ["wip-count", "#wip-list .paper", 0],
+   ["pub-count", "#pub-list .paper", 0]].forEach(function(row){
+    var el = document.getElementById(row[0]);
+    if(!el) return;
+    var n = document.querySelectorAll(row[1]).length + row[2];
+    el.textContent = n + (n === 1 ? " paper" : " papers");
+  });
+
+  var map = document.getElementById("map");
+
+  /* ---------- topic filtering ---------- */
+  var lists = Array.prototype.slice.call(document.querySelectorAll(".papers"));
+  var jmp = document.querySelector(".jmp");
+  var chips = Array.prototype.slice.call(document.querySelectorAll(".fb-chips .pill"));
+  var fbCount = document.getElementById("fb-count");
+  var fbClear = document.getElementById("fb-clear");
+  var activeTopic = null;
+
+  function applyFilter(topic){
+    activeTopic = topic;
+    allPapers.forEach(function(p){
+      var has = !topic || (p.getAttribute("data-topics") || "").split(/\s+/).indexOf(topic) > -1;
+      p.classList.toggle("match", has);
+    });
+    lists.forEach(function(l){ l.classList.toggle("filtering", !!topic); });
+    if(jmp){
+      jmp.style.opacity = (!topic || jmp.classList.contains("match")) ? "" : ".28";
+    }
+    chips.forEach(function(b){
+      b.setAttribute("aria-pressed", String(b.getAttribute("data-topic") === topic));
+    });
+    if(fbCount){
+      var shown = topic ? document.querySelectorAll(".paper.match").length : allPapers.length;
+      fbCount.textContent = topic
+        ? shown + " of " + allPapers.length + " papers"
+        : "all " + allPapers.length + " papers";
+    }
+    if(fbClear) fbClear.hidden = !topic;
+  }
+
+  chips.forEach(function(btn){
+    var topic = btn.getAttribute("data-topic");
+    btn.addEventListener("click", function(){
+      applyFilter(activeTopic === topic ? null : topic);
+    });
+  });
+  if(fbClear) fbClear.addEventListener("click", function(){ applyFilter(null); });
+  applyFilter(null);
+
+  // the three papers on the map: hovering reveals their topics (CSS), clicking
+  // jumps to their entry in the list below.
+  Array.prototype.forEach.call(map ? map.querySelectorAll("[data-scroll]") : [], function(node){
+    var targetId = node.getAttribute("data-scroll");
+    node.addEventListener("click", function(){
+      var el = document.getElementById(targetId);
+      if(!el) return;
+      var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
+      el.classList.add("flash");
+      setTimeout(function(){ el.classList.remove("flash"); }, 1400);
+      node.blur();   // otherwise :focus-within keeps the popover open behind you
+    });
+  });
+
+  /* ---------- abstract cards: pin, flip, dismiss ---------- */
+  var wraps = Array.prototype.slice.call(document.querySelectorAll(".hasab"));
+
+  function placeX(card){
+    // horizontal anchoring is scroll-independent, so it is also applied at rest —
+    // a hidden card parked past the right edge would otherwise widen the page.
+    card.removeAttribute("data-flip-x");
+    if(card.getBoundingClientRect().right > window.innerWidth - 12){
+      card.setAttribute("data-flip-x", "right");
+    }
+  }
+  function place(card){
+    card.removeAttribute("data-flip");
+    placeX(card);
+    var r = card.getBoundingClientRect();
+    if(r.bottom > window.innerHeight - 12 && r.height + 24 < window.innerHeight){
+      card.setAttribute("data-flip", "up");
+      placeX(card);
+    }
+  }
+
+  function unpinAll(except){
+    wraps.forEach(function(w){ if(w !== except) w.classList.remove("pinned"); });
+  }
+
+  wraps.forEach(function(wrap){
+    var card = wrap.querySelector(".card");
+    var trigger = wrap.querySelector(".abtrigger, .title-static");
+    if(!card || !trigger) return;
+
+    wrap.addEventListener("mouseenter", function(){ wrap.classList.remove("dismissed"); place(card); });
+    trigger.addEventListener("focus", function(){ wrap.classList.remove("dismissed"); place(card); });
+
+    trigger.addEventListener("click", function(ev){
+      ev.preventDefault();
+      var willPin = !wrap.classList.contains("pinned") || wrap.classList.contains("dismissed");
+      wrap.classList.remove("dismissed");
+      unpinAll(wrap);
+      wrap.classList.toggle("pinned", willPin);
+      if(willPin) place(card);
+    });
+    trigger.addEventListener("keydown", function(ev){
+      if(ev.key === "Enter" || ev.key === " "){
+        ev.preventDefault();
+        trigger.click();
+      }
+    });
+    var close = card.querySelector(".card-close");
+    if(close) close.addEventListener("click", function(ev){
+      ev.stopPropagation();
+      wrap.classList.remove("pinned");
+      wrap.classList.add("dismissed");
+      trigger.focus();
+    });
+  });
+
+  document.addEventListener("keydown", function(ev){
+    if(ev.key !== "Escape") return;
+    unpinAll(null);
+    wraps.forEach(function(w){ w.classList.add("dismissed"); });
+  });
+  document.addEventListener("click", function(ev){
+    if(!ev.target.closest(".hasab")) unpinAll(null);
+  });
+
+  /* ---------- files that sit next to this page ---------- */
+  // Rename here if the files are named differently in the repository.
+  // Anything not uploaded yet quietly keeps its placeholder — never a broken link.
+  var ASSETS = {
+    photo: "HW.JPG",
+    cv:    "HW_CV.pdf",
+    jmp:   "HW_JMP.pdf"
+  };
+
+  // Ask the server whether a file is actually there. Opened straight from disk
+  // there is no server to ask, so assume it is.
+  function fileExists(url){
+    if(!url) return Promise.resolve(false);
+    if(location.protocol === "file:") return Promise.resolve(true);
+    if(typeof fetch !== "function") return Promise.resolve(true);
+    return fetch(url, { method: "HEAD" })
+      .then(function(r){ return r.ok; })
+      .catch(function(){ return false; });
+  }
+
+  /* ---------- portrait ---------- */
+  (function mountPortrait(){
+    var fig = document.getElementById("portrait");
+    if(!fig || !ASSETS.photo) return;
+    var placeholder = fig.innerHTML;
+    var img = document.createElement("img");
+    img.alt = "Haoyu Wei";
+    img.onerror = function(){ fig.innerHTML = placeholder; };  // photo not uploaded yet
+    img.src = ASSETS.photo;
+    fig.innerHTML = "";
+    fig.appendChild(img);
+  })();
+
+  /* ---------- curriculum vitae ---------- */
+  (function mountCV(){
+    var det = document.getElementById("cv-details");
+    var vp = document.getElementById("cv-viewport");
+    var action = document.getElementById("cv-action");
+    var nameEl = document.getElementById("cv-name");
+    if(nameEl && ASSETS.cv) nameEl.textContent = ASSETS.cv;
+    if(!det || !vp) return;
+    var ready = false;
+
+    function embed(){
+      if(!ready || vp.querySelector("iframe")) return;
+      vp.innerHTML = "";
+      vp.classList.add("has-pdf");
+      var frame = document.createElement("iframe");
+      frame.src = ASSETS.cv;
+      frame.title = "Curriculum vitae";
+      vp.appendChild(frame);
+    }
+
+    fileExists(ASSETS.cv).then(function(ok){
+      if(!ok) return;                    // "CV in preparation" stays
+      ready = true;
+      if(action){
+        action.innerHTML = "";
+        var a = document.createElement("a");
+        a.href = ASSETS.cv; a.target = "_blank"; a.rel = "noopener";
+        a.textContent = "open / download";
+        // the link sits inside <summary>; without this it would fold the panel too
+        a.addEventListener("click", function(ev){ ev.stopPropagation(); });
+        action.appendChild(a);
+      }
+      if(det.open) embed();
+    });
+
+    // the PDF is only fetched once someone asks to see it
+    det.addEventListener("toggle", function(){ if(det.open) embed(); });
+  })();
+
+  /* ---------- job market paper ---------- */
+  (function mountJMP(){
+    var slot = document.getElementById("jmp-link");
+    if(!slot) return;
+    fileExists(ASSETS.jmp).then(function(ok){
+      if(!ok) return;                    // "The draft will appear soon" stays
+      slot.innerHTML =
+        '<a class="jmp-cta" href="' + ASSETS.jmp + '" target="_blank" rel="noopener">' +
+          '<svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" ' +
+               'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' +
+            '<path d="M8 1.5v8.5M4.5 7L8 10.5 11.5 7M2 13.5h12"/>' +
+          '</svg>Download the paper</a>';
+    });
+  })();
+
+  /* ---------- tab routing ---------- */
+  var TABS = ["home", "research", "teaching"];
+  var tabLinks = Array.prototype.slice.call(document.querySelectorAll(".tab"));
+
+  function showTab(name, scroll){
+    if(TABS.indexOf(name) < 0) name = "home";
+    TABS.forEach(function(t){
+      var panel = document.getElementById("panel-" + t);
+      if(panel) panel.classList.toggle("is-active", t === name);
+    });
+    tabLinks.forEach(function(l){
+      if(l.getAttribute("data-tab") === name) l.setAttribute("aria-current", "page");
+      else l.removeAttribute("aria-current");
+    });
+    // cards can only be measured once their panel is on screen
+    if(name === "research"){ restCards(); }
+    if(scroll){
+      var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
+    }
+  }
+
+  function currentTab(){ return (location.hash || "").replace(/^#\/?/, ""); }
+  window.addEventListener("hashchange", function(){ showTab(currentTab(), true); });
+  showTab(currentTab(), false);
+
+  /* ---------- lifecycle ---------- */
+  var raf;
+  function onResize(){
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(function(){
+      restCards();
+    });
+  }
+  function restCards(){
+    wraps.forEach(function(w){
+      if(w.classList.contains("pinned")) return;
+      var c = w.querySelector(".card");
+      if(c){ c.removeAttribute("data-flip"); placeX(c); }
+    });
+  }
+
+  window.addEventListener("resize", onResize);
+  function refresh(){
+    var research = document.getElementById("panel-research");
+    if(research && research.classList.contains("is-active")) restCards();
+  }
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(refresh);
+  window.addEventListener("load", refresh);
+  refresh();
+})();
+</script>
+
+</body>
+</html>
