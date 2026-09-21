@@ -720,26 +720,38 @@ a{color:inherit}
 /* ============================================================
    TEACHING PANEL
    ============================================================ */
+/* one block per kind of teaching. The rule between blocks is deliberately
+   stronger than the row hairlines, so a role's duties never read as belonging
+   to the role above it. */
+.teach-block + .teach-block{
+  border-top:1px solid color-mix(in srgb, var(--ink) 32%, transparent);
+  margin-top:2.25rem;padding-top:1.625rem;
+}
+.teach-role{
+  font-family:var(--mono);font-size:.6875rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 1rem;
+}
+.teach-block .courses .course:last-child{border-bottom:0}
+/* a list that sits straight under a role label needs no rule of its own above it */
+.teach-role + .courses > .course:first-child{border-top:0;padding-top:0}
+
 /* the current course leads, but quietly — a rule, not a card */
 .teach-now{
   border-left:2px solid var(--key);
   padding:.0625rem 0 .0625rem 1.125rem;
-  margin:0 0 1.75rem;
-  display:grid;gap:.1875rem;
+  display:grid;gap:.25rem;
 }
-.teach-now .now-tag{
+.now-row{display:flex;flex-wrap:wrap;align-items:baseline;gap:.25rem 1rem}
+.teach-now .now-title{font-size:1.125rem;line-height:1.3;margin:0}
+.teach-now .now-term{
+  margin:0 0 0 auto;
   font-family:var(--mono);font-size:.625rem;letter-spacing:.16em;text-transform:uppercase;
-  color:var(--key);margin:0;
+  color:var(--key);
 }
-.teach-now .now-title{
-  font-size:1.125rem;line-height:1.3;margin:0;
-}
-.teach-now .now-role{
-  font-family:var(--mono);font-size:.6875rem;color:var(--muted);margin:0;
-}
+.teach-now .now-role{font-family:var(--mono);font-size:.6875rem;color:var(--muted);margin:0}
 .teach-lead{
   font-family:var(--serif);
-  font-size:clamp(1.0625rem,1.7vw,1.1875rem);
+  font-size:clamp(1rem,1.6vw,1.0625rem);
   line-height:1.6;color:var(--ink-soft);
   max-width:58ch;margin:0 0 1.125rem;
 }
@@ -838,7 +850,6 @@ a{color:inherit}
       </svg>
         <h2 id="cv-h">Curriculum vitae</h2>
       </div>
-      <p class="sec-note">The full CV, with references and complete paper list.</p>
 
       <details class="cv-frame" id="cv-details">
         <summary class="cv-bar">
@@ -1375,70 +1386,88 @@ a{color:inherit}
         <span class="count" id="teach-count">9 courses</span>
       </div>
 
-      <div class="teach-now">
-        <p class="now-tag">Current · Fall 2026</p>
-        <h3 class="now-title">ECON 120B — Econometrics</h3>
-        <p class="now-role">Associate-In (instructor of record), UC San Diego</p>
+      <!-- one block per role; the rule between blocks keeps each role's duties with it -->
+      <div class="teach-block">
+        <p class="teach-role">Instructor of record</p>
+        <div class="teach-now">
+          <div class="now-row">
+            <h3 class="now-title">ECON 120B — Econometrics</h3>
+            <p class="now-term">Fall 2026 · current</p>
+          </div>
+          <p class="now-role">Associate-In, UC San Diego</p>
+        </div>
       </div>
 
-      <p class="teach-lead">
-        As a teaching assistant I led discussion and review sessions, held weekly office
-        hours, assisted in preparing exams and problem sets, and graded exams and
-        assignments.
-      </p>
-      <ul class="tools">
-        <li>Stata</li>
-        <li>R</li>
-      </ul>
-
-      <div class="course-group">
-        <div class="grp-head">
-          <h3>Teaching assistant — Ph.D.-level courses</h3>
-          <span class="count">3</span>
-        </div>
+      <div class="teach-block">
+        <p class="teach-role">Tutor</p>
         <ol class="courses">
-          <li class="course">
-            <p class="course-name">Econometrics 220C</p>
-            <p class="course-meta">Prof. Yixiao Sun</p>
-          </li>
-          <li class="course">
-            <p class="course-name">Advanced Multivariate Statistical Analysis</p>
-            <p class="course-meta">Prof. Songxi Chen</p>
-          </li>
-          <li class="course">
-            <p class="course-name">Asymptotic Statistics</p>
-            <p class="course-meta">Prof. Songxi Chen</p>
+          <li class="course course--role">
+            <p class="course-name">Ph.D. Econometrics Qualifying Exam</p>
+            <p class="course-meta">Summer 2025 · Summer 2026</p>
           </li>
         </ol>
       </div>
 
-      <div class="course-group">
-        <div class="grp-head">
-          <h3>Teaching assistant — upper-division undergraduate courses</h3>
-          <span class="count">5</span>
+      <div class="teach-block">
+        <p class="teach-role">Teaching assistant</p>
+        <p class="teach-lead">
+          Led discussion and review sessions, held weekly office hours, assisted in
+          preparing exams and problem sets, and graded exams and assignments.
+        </p>
+        <ul class="tools">
+          <li>Stata</li>
+          <li>R</li>
+        </ul>
+
+        <div class="course-group">
+          <div class="grp-head">
+            <h3>Ph.D.-level courses</h3>
+            <span class="count">3</span>
+          </div>
+          <ol class="courses">
+            <li class="course">
+              <p class="course-name">Econometrics 220C</p>
+              <p class="course-meta">Prof. Yixiao Sun</p>
+            </li>
+            <li class="course">
+              <p class="course-name">Advanced Multivariate Statistical Analysis</p>
+              <p class="course-meta">Prof. Songxi Chen</p>
+            </li>
+            <li class="course">
+              <p class="course-name">Asymptotic Statistics</p>
+              <p class="course-meta">Prof. Songxi Chen</p>
+            </li>
+          </ol>
         </div>
-        <ol class="courses">
-          <li class="course">
-            <p class="course-name">Econometrics 120B and 120C</p>
-            <p class="course-meta">Dr. Maria Candido · Prof. Yixiao Sun</p>
-          </li>
-          <li class="course">
-            <p class="course-name">Economic &amp; Business Forecasting</p>
-            <p class="course-meta">Prof. Ying Zhu</p>
-          </li>
-          <li class="course">
-            <p class="course-name">Time Series</p>
-            <p class="course-meta">Dr. Ioannis Papastathopoulos</p>
-          </li>
-          <li class="course">
-            <p class="course-name">Probability and Statistics for Engineers</p>
-            <p class="course-meta">Prof. Donald E. K. Martin</p>
-          </li>
-          <li class="course">
-            <p class="course-name">Introduction to Survey Sampling &amp; Statistical Methods for Quality and Productivity Improvement</p>
-            <p class="course-meta">Prof. Logan J. Opperman</p>
-          </li>
-        </ol>
+
+        <div class="course-group">
+          <div class="grp-head">
+            <h3>Upper-division undergraduate courses</h3>
+            <span class="count">5</span>
+          </div>
+          <ol class="courses">
+            <li class="course">
+              <p class="course-name">Econometrics 120B and 120C</p>
+              <p class="course-meta">Dr. Maria Candido · Prof. Yixiao Sun</p>
+            </li>
+            <li class="course">
+              <p class="course-name">Economic &amp; Business Forecasting</p>
+              <p class="course-meta">Prof. Ying Zhu</p>
+            </li>
+            <li class="course">
+              <p class="course-name">Time Series</p>
+              <p class="course-meta">Dr. Ioannis Papastathopoulos</p>
+            </li>
+            <li class="course">
+              <p class="course-name">Probability and Statistics for Engineers</p>
+              <p class="course-meta">Prof. Donald E. K. Martin</p>
+            </li>
+            <li class="course">
+              <p class="course-name">Introduction to Survey Sampling &amp; Statistical Methods for Quality and Productivity Improvement</p>
+              <p class="course-meta">Prof. Logan J. Opperman</p>
+            </li>
+          </ol>
+        </div>
       </div>
     </section>
   </div><!-- /panel-teaching -->
@@ -1483,7 +1512,7 @@ a{color:inherit}
     var n = pill.querySelector(".n");
     if(n) n.textContent = countTopic(pill.getAttribute("data-topic"));
   });
-  var courseCount = document.querySelectorAll(".courses .course").length +
+  var courseCount = document.querySelectorAll(".courses .course:not(.course--role)").length +
                     (document.querySelector(".teach-now") ? 1 : 0);
   var hcP = document.getElementById("hc-papers");
   var hcC = document.getElementById("hc-courses");
