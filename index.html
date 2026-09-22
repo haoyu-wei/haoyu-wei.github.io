@@ -290,6 +290,9 @@ a{color:inherit}
    so a popover never spills past the panel */
 .spine-row .topics-pop{top:auto;bottom:calc(100% + .5rem)}
 .spine-row .mapnode:last-child .topics-pop{left:auto;right:0}
+/* set by script when the default side has no room on screen */
+.mapnode .topics-pop[data-dir="down"]{top:calc(100% + .5rem);bottom:auto}
+.mapnode .topics-pop[data-dir="up"]{top:auto;bottom:calc(100% + .5rem)}
 .mapnode:hover > .topics-pop,
 .mapnode:focus-within > .topics-pop{opacity:1;visibility:visible;transform:none}
 .tp-row{display:grid;gap:.375rem}
@@ -418,7 +421,7 @@ a{color:inherit}
 }
 .paper:last-child{border-bottom:1px solid var(--rule)}
 @media (min-width:760px){
-  .paper{grid-template-columns:minmax(0,1fr) 14.5rem;align-items:start}
+  .paper{grid-template-columns:minmax(0,1fr) 15.75rem;align-items:start}
   .paper-meta{text-align:right}
   /* the job-market card is a single column even though it is also a .paper */
   .paper.jmp{grid-template-columns:minmax(0,1fr)}
@@ -940,6 +943,12 @@ a{color:inherit}
                     <span class="pill tlabel">Staggered DiD</span>
                   </span>
                 </div>
+                <div class="tp-row tp-row--ml">
+                  <span class="tp-label">Machine learning</span>
+                  <span class="tp-chips">
+                    <span class="pill tlabel">Targeted learning (TMLE)</span>
+                  </span>
+                </div>
               </div>
             </div>
 
@@ -957,6 +966,12 @@ a{color:inherit}
                       <span class="pill tlabel">Causal graphs</span>
                       <span class="pill tlabel">Causal mediation</span>
                       <span class="pill tlabel">Semiparametric efficiency</span>
+                    </span>
+                  </div>
+                  <div class="tp-row tp-row--ml">
+                    <span class="tp-label">Machine learning</span>
+                    <span class="tp-chips">
+                      <span class="pill tlabel">Targeted learning (TMLE)</span>
                     </span>
                   </div>
                 </div>
@@ -1026,6 +1041,7 @@ a{color:inherit}
       <div class="fb-group fb-group--ml">
         <span class="fb-label">Machine learning</span>
         <div class="fb-chips" role="group" aria-label="Filter by machine learning topic">
+          <button class="pill" data-topic="tmle" aria-pressed="false" type="button">Targeted learning (TMLE) <span class="n"></span></button>
           <button class="pill" data-topic="concentration" aria-pressed="false" type="button">Concentration inequalities <span class="n"></span></button>
           <button class="pill" data-topic="highdim" aria-pressed="false" type="button">High-dimensional inference <span class="n"></span></button>
           <button class="pill" data-topic="bandits" aria-pressed="false" type="button">Bandits &amp; exploration <span class="n"></span></button>
@@ -1050,7 +1066,7 @@ a{color:inherit}
     </p>
 
     <!-- ---- the job market paper, nested at the top ---- -->
-    <article class="jmp paper match" id="jmp-paper" data-topics="did semiparam">
+    <article class="jmp paper match" id="jmp-paper" data-topics="did semiparam tmle">
       <p class="jmp-tag">★ Job market paper</p>
       <h3>
         <span class="hasab">
@@ -1074,13 +1090,14 @@ a{color:inherit}
           <span class="tag" data-field="x">cross-field</span>
           <span class="tag" data-field="ci">staggered DiD</span>
           <span class="tag" data-field="ci">semiparametric</span>
+          <span class="tag" data-field="ml">TMLE</span>
         </span>
       </div>
     </article>
 
     <ol class="papers" id="wp-list">
 
-      <li class="paper" id="nested-paper" data-topics="graphs mediation semiparam">
+      <li class="paper" id="nested-paper" data-topics="graphs mediation semiparam tmle">
         <div>
           <h3 class="paper-title">
             <a href="https://arxiv.org/abs/2609.17939" target="_blank" rel="noopener">Recursive-Head Geometry and Order-Free Efficient Inference in Finite-State Nested Markov Models</a>
@@ -1102,6 +1119,7 @@ a{color:inherit}
           <span class="tags">
             <span class="tag" data-field="x">cross-field</span>
             <span class="tag" data-field="ci">causal graphs</span>
+            <span class="tag" data-field="ml">TMLE</span>
           </span>
         </div>
       </li>
@@ -1570,6 +1588,23 @@ a{color:inherit}
   });
   if(fbClear) fbClear.addEventListener("click", function(){ applyFilter(null); });
   applyFilter(null);
+
+  // topic popovers open toward whichever side of the paper has room on screen
+  Array.prototype.forEach.call(document.querySelectorAll(".mapnode"), function(node){
+    var pop = node.querySelector(".topics-pop");
+    if(!pop) return;
+    function orient(){
+      pop.removeAttribute("data-dir");
+      var nb = node.getBoundingClientRect();
+      var need = pop.offsetHeight + 12;
+      var above = nb.top, below = window.innerHeight - nb.bottom;
+      var opensUp = !!node.closest(".spine-row");
+      if(opensUp && above < need && below > above) pop.setAttribute("data-dir", "down");
+      else if(!opensUp && below < need && above > below) pop.setAttribute("data-dir", "up");
+    }
+    node.addEventListener("mouseenter", orient);
+    node.addEventListener("focusin", orient);
+  });
 
   // the three papers on the map: hovering reveals their topics (CSS), clicking
   // jumps to their entry in the list below.
