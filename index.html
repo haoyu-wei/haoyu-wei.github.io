@@ -518,6 +518,12 @@ a{color:inherit}
   cursor:default;
 }
 .jmp-cta.is-pending:hover{transform:none;box-shadow:none}
+/* which draft is posted, and whether a newer one is on its way */
+.jmp-version{font-family:var(--mono);font-size:.6875rem;color:var(--muted)}
+.jmp-notice{
+  margin:0;font-size:.875rem;line-height:1.5;color:var(--ink-soft);
+  border-left:2px solid var(--key);padding:.125rem 0 .125rem .75rem;
+}
 
 /* ============================================================
    ABSTRACT CARD  (CSS-first, JS refines placement)
@@ -1086,6 +1092,7 @@ a{color:inherit}
         <span class="jmp-cta-slot" id="jmp-link">
           <span class="jmp-cta is-pending">The draft will appear soon</span>
         </span>
+        <span class="jmp-version" id="jmp-version" hidden></span>
         <span class="tags">
           <span class="tag" data-field="x">cross-field</span>
           <span class="tag" data-field="ci">staggered DiD</span>
@@ -1093,6 +1100,7 @@ a{color:inherit}
           <span class="tag" data-field="ml">TMLE</span>
         </span>
       </div>
+      <p class="jmp-notice" id="jmp-notice" role="status" hidden></p>
     </article>
 
     <ol class="papers" id="wp-list">
@@ -1695,6 +1703,21 @@ a{color:inherit}
     jmp:   "HW_JMP.pdf"
   };
 
+  // Job market paper status: the only lines to edit when the draft changes.
+  //   version      date of the PDF now posted, as "YYYY-MM-DD". Shown as
+  //                "This version: ..." beside the download button.
+  //   revision     date a revised draft will be posted, as "YYYY-MM-DD", or ""
+  //                for none. The notice disappears by itself after that date.
+  //   unavailable  true ONLY in an emergency: hides the download and says a
+  //                revised draft is coming (by the revision date, if one is set).
+  //                The PDF's own address still works; delete HW_JMP.pdf from the
+  //                repository as well if no one should be able to open it.
+  var JMP_STATUS = {
+    version:     "2026-10-23",
+    revision:    "",
+    unavailable: false
+  };
+
   // Ask the server whether a file is actually there. Opened straight from disk
   // there is no server to ask, so assume it is.
   function fileExists(url){
@@ -1759,17 +1782,69 @@ a{color:inherit}
   })();
 
   /* ---------- job market paper ---------- */
+  var MONTHS = ["January", "February", "March", "April", "May", "June", "July",
+                "August", "September", "October", "November", "December"];
+
+  // "YYYY-MM-DD" as a local calendar day. new Date("YYYY-MM-DD") would read it
+  // as UTC midnight, which is the previous evening anywhere in the Americas.
+  function parseDay(s){
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || "");
+    if(!m) return null;
+    var d = new Date(+m[1], +m[2] - 1, +m[3]);
+    return d.getMonth() === +m[2] - 1 ? d : null;   // rejects e.g. 2026-02-30
+  }
+  function longDate(d){
+    return MONTHS[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();
+  }
+
   (function mountJMP(){
     var slot = document.getElementById("jmp-link");
+    var versionEl = document.getElementById("jmp-version");
+    var notice = document.getElementById("jmp-notice");
     if(!slot) return;
+
+    var version = parseDay(JMP_STATUS.version);
+    var revision = parseDay(JMP_STATUS.revision);
+    var now = new Date();
+    var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    // still ahead, and not a date left over from before the posted version
+    var revisionDue = revision && revision >= today && !(version && revision <= version);
+
+    function say(text){
+      if(!notice) return;
+      notice.textContent = text;
+      notice.hidden = false;
+    }
+
+    if(JMP_STATUS.unavailable){
+      slot.innerHTML = '<span class="jmp-cta is-pending">Temporarily unavailable</span>';
+      say("The current draft is temporarily unavailable while it is being revised. " +
+          (revision && revision >= today
+            ? "The new version will be posted by " + longDate(revision) + "."
+            : "The new version will be posted shortly."));
+      return;
+    }
+
     fileExists(ASSETS.jmp).then(function(ok){
       if(!ok) return;                    // "The draft will appear soon" stays
+      // the version in the address makes browsers fetch a new draft, not a cached one
+      var href = ASSETS.jmp + (version ? "?v=" + JMP_STATUS.version : "");
       slot.innerHTML =
-        '<a class="jmp-cta" href="' + ASSETS.jmp + '" target="_blank" rel="noopener">' +
+        '<a class="jmp-cta" href="' + href + '" target="_blank" rel="noopener">' +
           '<svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" ' +
                'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' +
             '<path d="M8 1.5v8.5M4.5 7L8 10.5 11.5 7M2 13.5h12"/>' +
           '</svg>Download the paper</a>';
+      if(version && versionEl){
+        versionEl.innerHTML = "";
+        var t = document.createElement("time");
+        t.dateTime = JMP_STATUS.version;
+        t.textContent = longDate(version);
+        versionEl.appendChild(document.createTextNode("This version: "));
+        versionEl.appendChild(t);
+        versionEl.hidden = false;
+      }
+      if(revisionDue) say("A revised version will be posted by " + longDate(revision) + ".");
     });
   })();
 
