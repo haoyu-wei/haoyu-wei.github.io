@@ -1072,7 +1072,31 @@ a{color:inherit}
     </p>
 
     <!-- ---- the job market paper, nested at the top ---- -->
-    <article class="jmp paper match" id="jmp-paper" data-topics="did semiparam tmle">
+    <!--
+      JOB MARKET PAPER STATUS: the three data-… lines on the <article> just below.
+        data-version      the day you uploaded the current HW_JMP.pdf, as "YYYY-MM-DD".
+                          Shown as "This version: …" beside the download button.
+        data-revision     the date you promise the next draft by, as "YYYY-MM-DD",
+                          or "" for none. Shows "A revised version will be posted
+                          by …" and disappears by itself once that date has passed
+                          (move it later if you will miss it).
+        data-unavailable  "no" normally. "yes" ONLY in an emergency: the download
+                          button becomes "Temporarily unavailable".
+      To post a new draft:
+        1. upload the new PDF as HW_JMP.pdf ("Add files via upload", same name);
+        2. set data-version to that day;
+        3. set data-revision back to "" (even if you posted early, or the
+           "will be posted by" line stays up until the promised date);
+        4. after an emergency, set data-unavailable back to "no".
+      In an emergency, "yes" only hides the button: the PDF's own address keeps
+      working until HW_JMP.pdf is deleted, and because this repository is public,
+      every PDF ever uploaded stays in its history on GitHub unless that history
+      is rewritten.
+    -->
+    <article class="jmp paper match" id="jmp-paper" data-topics="did semiparam tmle"
+             data-version="2026-10-23"
+             data-revision=""
+             data-unavailable="no">
       <p class="jmp-tag">★ Job market paper</p>
       <h3>
         <span class="hasab">
@@ -1100,7 +1124,7 @@ a{color:inherit}
           <span class="tag" data-field="ml">TMLE</span>
         </span>
       </div>
-      <p class="jmp-notice" id="jmp-notice" role="status" hidden></p>
+      <p class="jmp-notice" id="jmp-notice" hidden></p>
     </article>
 
     <ol class="papers" id="wp-list">
@@ -1703,21 +1727,6 @@ a{color:inherit}
     jmp:   "HW_JMP.pdf"
   };
 
-  // Job market paper status: the only lines to edit when the draft changes.
-  //   version      date of the PDF now posted, as "YYYY-MM-DD". Shown as
-  //                "This version: ..." beside the download button.
-  //   revision     date a revised draft will be posted, as "YYYY-MM-DD", or ""
-  //                for none. The notice disappears by itself after that date.
-  //   unavailable  true ONLY in an emergency: hides the download and says a
-  //                revised draft is coming (by the revision date, if one is set).
-  //                The PDF's own address still works; delete HW_JMP.pdf from the
-  //                repository as well if no one should be able to open it.
-  var JMP_STATUS = {
-    version:     "2026-10-23",
-    revision:    "",
-    unavailable: false
-  };
-
   // Ask the server whether a file is actually there. Opened straight from disk
   // there is no server to ask, so assume it is.
   function fileExists(url){
@@ -1782,53 +1791,73 @@ a{color:inherit}
   })();
 
   /* ---------- job market paper ---------- */
+  // Its version, revision and emergency settings are data-* attributes on the
+  // card (#jmp-paper). Being plain text there, a typo can at worst hide the
+  // version line or the notice; it cannot stop this script.
   var MONTHS = ["January", "February", "March", "April", "May", "June", "July",
                 "August", "September", "October", "November", "December"];
 
-  // "YYYY-MM-DD" as a local calendar day. new Date("YYYY-MM-DD") would read it
-  // as UTC midnight, which is the previous evening anywhere in the Americas.
+  // "YYYY-MM-DD" (a one-digit month or day is fine) as a local calendar day.
+  // new Date("YYYY-MM-DD") would read it as UTC midnight, which is the previous
+  // evening anywhere in the Americas.
   function parseDay(s){
-    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || "");
+    var m = /^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})$/.exec(String(s || "").trim());
     if(!m) return null;
     var d = new Date(+m[1], +m[2] - 1, +m[3]);
     return d.getMonth() === +m[2] - 1 ? d : null;   // rejects e.g. 2026-02-30
   }
-  function longDate(d){
-    return MONTHS[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();
+  function isoDay(d){
+    function two(n){ return (n < 10 ? "0" : "") + n; }
+    return d.getFullYear() + "-" + two(d.getMonth() + 1) + "-" + two(d.getDate());
+  }
+  function timeEl(d){
+    var t = document.createElement("time");
+    t.dateTime = isoDay(d);
+    t.textContent = MONTHS[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();
+    return t;
   }
 
   (function mountJMP(){
+    var card = document.getElementById("jmp-paper");
     var slot = document.getElementById("jmp-link");
     var versionEl = document.getElementById("jmp-version");
     var notice = document.getElementById("jmp-notice");
-    if(!slot) return;
+    if(!card || !slot) return;
 
-    var version = parseDay(JMP_STATUS.version);
-    var revision = parseDay(JMP_STATUS.revision);
+    function setting(name){ return (card.getAttribute("data-" + name) || "").trim(); }
+    ["version", "revision"].forEach(function(name){
+      if(setting(name) && !parseDay(setting(name)))
+        console.warn('#jmp-paper data-' + name + ' should look like "2026-10-23", not "' + setting(name) + '"');
+    });
+    var version = parseDay(setting("version"));
+    var revision = parseDay(setting("revision"));
+    var unavailable = /^(yes|true)$/i.test(setting("unavailable"));
     var now = new Date();
     var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    // still ahead, and not a date left over from before the posted version
-    var revisionDue = revision && revision >= today && !(version && revision <= version);
+    var revisionAhead = revision && revision >= today;
 
-    function say(text){
+    // strings and dates, in order; dates become <time> elements
+    function say(){
       if(!notice) return;
-      notice.textContent = text;
+      notice.textContent = "";
+      Array.prototype.forEach.call(arguments, function(part){
+        notice.appendChild(part instanceof Date ? timeEl(part) : document.createTextNode(part));
+      });
       notice.hidden = false;
     }
 
-    if(JMP_STATUS.unavailable){
+    if(unavailable){
       slot.innerHTML = '<span class="jmp-cta is-pending">Temporarily unavailable</span>';
-      say("The current draft is temporarily unavailable while it is being revised. " +
-          (revision && revision >= today
-            ? "The new version will be posted by " + longDate(revision) + "."
-            : "The new version will be posted shortly."));
+      var why = "The current draft is temporarily unavailable while it is being revised. ";
+      if(revisionAhead) say(why + "The new version will be posted by ", revision, ".");
+      else say(why + "The new version will be posted shortly.");
       return;
     }
 
     fileExists(ASSETS.jmp).then(function(ok){
       if(!ok) return;                    // "The draft will appear soon" stays
       // the version in the address makes browsers fetch a new draft, not a cached one
-      var href = ASSETS.jmp + (version ? "?v=" + JMP_STATUS.version : "");
+      var href = ASSETS.jmp + (version ? "?v=" + isoDay(version) : "");
       slot.innerHTML =
         '<a class="jmp-cta" href="' + href + '" target="_blank" rel="noopener">' +
           '<svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" ' +
@@ -1836,15 +1865,13 @@ a{color:inherit}
             '<path d="M8 1.5v8.5M4.5 7L8 10.5 11.5 7M2 13.5h12"/>' +
           '</svg>Download the paper</a>';
       if(version && versionEl){
-        versionEl.innerHTML = "";
-        var t = document.createElement("time");
-        t.dateTime = JMP_STATUS.version;
-        t.textContent = longDate(version);
-        versionEl.appendChild(document.createTextNode("This version: "));
-        versionEl.appendChild(t);
+        versionEl.textContent = "This version: ";
+        versionEl.appendChild(timeEl(version));
         versionEl.hidden = false;
       }
-      if(revisionDue) say("A revised version will be posted by " + longDate(revision) + ".");
+      // still ahead, and not a date left over from before the posted version
+      if(revisionAhead && !(version && revision <= version))
+        say("A revised version will be posted by ", revision, ".");
     });
   })();
 
