@@ -1074,6 +1074,7 @@ a{color:inherit}
     <!-- ---- the job market paper, nested at the top ---- -->
     <!--
       JOB MARKET PAPER STATUS: the three data-… lines on the <article> just below.
+      Keep both quotes on each line.
         data-version      the day you uploaded the current HW_JMP.pdf, as "YYYY-MM-DD".
                           Shown as "This version: …" beside the download button.
         data-revision     the date you promise the next draft by, as "YYYY-MM-DD",
@@ -1081,22 +1082,29 @@ a{color:inherit}
                           by …" and disappears by itself once that date has passed
                           (move it later if you will miss it).
         data-unavailable  "no" normally. "yes" ONLY in an emergency: the download
-                          button becomes "Temporarily unavailable".
+                          button becomes "Temporarily unavailable", and a line below
+                          says the draft is being revised and the new version will
+                          be posted by your data-revision date ("shortly" if that is
+                          "" or already past).
       To post a new draft:
         1. upload the new PDF as HW_JMP.pdf ("Add files via upload", same name);
         2. set data-version to that day;
         3. set data-revision back to "" (even if you posted early, or the
            "will be posted by" line stays up until the promised date);
         4. after an emergency, set data-unavailable back to "no".
-      In an emergency, "yes" only hides the button: the PDF's own address keeps
-      working until HW_JMP.pdf is deleted, and because this repository is public,
-      every PDF ever uploaded stays in its history on GitHub unless that history
-      is rewritten.
+      After any change, wait a minute or two for the site to update, then reload
+      it and check that the card reads as you intended.
+      In an emergency, "yes" does not take the PDF itself offline: its own address
+      keeps working until HW_JMP.pdf is deleted. Because this repository is public,
+      every PDF ever uploaded also stays in its history on GitHub; removing one for
+      good takes a history rewrite plus a request to GitHub Support, and copies
+      people have already downloaded remain.
     -->
     <article class="jmp paper match" id="jmp-paper" data-topics="did semiparam tmle"
              data-version="2026-10-23"
              data-revision=""
-             data-unavailable="no">
+             data-unavailable="no"
+    >
       <p class="jmp-tag">★ Job market paper</p>
       <h3>
         <span class="hasab">
@@ -1792,8 +1800,8 @@ a{color:inherit}
 
   /* ---------- job market paper ---------- */
   // Its version, revision and emergency settings are data-* attributes on the
-  // card (#jmp-paper). Being plain text there, a typo can at worst hide the
-  // version line or the notice; it cannot stop this script.
+  // card (#jmp-paper). Being plain text there, a wrong value inside the quotes
+  // can at worst hide the version line or the notice; it cannot stop this script.
   var MONTHS = ["January", "February", "March", "April", "May", "June", "July",
                 "August", "September", "October", "November", "December"];
 
