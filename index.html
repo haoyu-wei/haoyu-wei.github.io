@@ -1646,17 +1646,22 @@ a{color:inherit}
     node.addEventListener("focusin", orient);
   });
 
+  // bring a paper's entry into view and pulse its outline once
+  function jumpTo(id, smooth){
+    var el = document.getElementById(id);
+    if(!el) return;
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    el.scrollIntoView({ behavior: smooth && !reduce ? "smooth" : "auto", block: "center" });
+    el.classList.add("flash");
+    setTimeout(function(){ el.classList.remove("flash"); }, 1400);
+  }
+
   // the three papers on the map: hovering reveals their topics (CSS), clicking
   // jumps to their entry in the list below.
   Array.prototype.forEach.call(map ? map.querySelectorAll("[data-scroll]") : [], function(node){
     var targetId = node.getAttribute("data-scroll");
     node.addEventListener("click", function(){
-      var el = document.getElementById(targetId);
-      if(!el) return;
-      var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
-      el.classList.add("flash");
-      setTimeout(function(){ el.classList.remove("flash"); }, 1400);
+      jumpTo(targetId, true);
       node.blur();   // otherwise :focus-within keeps the popover open behind you
     });
   });
@@ -1871,7 +1876,7 @@ a{color:inherit}
           '<svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" ' +
                'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' +
             '<path d="M8 1.5v8.5M4.5 7L8 10.5 11.5 7M2 13.5h12"/>' +
-          '</svg>Download the paper</a>';
+          '</svg>Download the draft</a>';
       if(version && versionEl){
         versionEl.textContent = "This version: ";
         versionEl.appendChild(timeEl(version));
@@ -1905,9 +1910,22 @@ a{color:inherit}
     }
   }
 
+  // links that land on one paper rather than a tab. haoyu-wei.github.io/#jmp is
+  // the "latest version" link printed in the job market paper itself.
+  var PAPER_LINKS = { jmp: "jmp-paper" };
+
   function currentTab(){ return (location.hash || "").replace(/^#\/?/, ""); }
-  window.addEventListener("hashchange", function(){ showTab(currentTab(), true); });
-  showTab(currentTab(), false);
+  function route(scroll){
+    var name = currentTab();
+    if(PAPER_LINKS.hasOwnProperty(name)){
+      showTab("research", false);
+      jumpTo(PAPER_LINKS[name], scroll);
+    } else {
+      showTab(name, scroll);
+    }
+  }
+  window.addEventListener("hashchange", function(){ route(true); });
+  route(false);
 
   /* ---------- lifecycle ---------- */
   var raf;
