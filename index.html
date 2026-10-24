@@ -200,6 +200,21 @@ a{color:inherit}
 }
 
 /* ============================================================
+   RESEARCH STATEMENT — plain prose for a general reader
+   ============================================================ */
+.statement{margin-top:1rem}
+.statement p{
+  font-family:var(--serif);
+  font-size:clamp(1.0625rem,1.6vw,1.1875rem);
+  line-height:1.65;
+  color:var(--ink-soft);
+  max-width:var(--measure);
+  margin:0 0 1em;
+  text-wrap:pretty;
+}
+.statement p:last-child{margin-bottom:0}
+
+/* ============================================================
    RESEARCH MAP
    ============================================================ */
 .map-wrap{
@@ -886,8 +901,8 @@ a{color:inherit}
             <span class="hc-count" id="hc-papers"></span>
           </span>
           <span class="hc-note">
-            A map of where the work sits, the job market paper, and the full list —
-            filterable by topic.
+            A short research statement, a map of where the work sits, the job market
+            paper, and the full list — filterable by topic.
           </span>
           <span class="hc-go">Go to Research <svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 8h11M9.5 4l4 4-4 4"/></svg></span>
         </a>
@@ -908,6 +923,30 @@ a{color:inherit}
 
   <!-- ================= RESEARCH ================= -->
   <div class="panel" id="panel-research">
+
+  <!-- ================= RESEARCH STATEMENT ================= -->
+  <section class="section" aria-labelledby="statement-h">
+    <div class="sec-head">
+      <svg class="stair" width="26" height="14" viewBox="0 0 26 14" aria-hidden="true">
+        <path d="M0 13h6V9h6V5h6V1h7" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+      <h2 id="statement-h">Research statement</h2>
+    </div>
+    <div class="statement">
+      <p>
+        Most empirical questions are causal: did the policy work, for whom, and through which channel? Answering one from observational data means first estimating a great many quantities that are of no interest in themselves — who was treated and when, how outcomes would otherwise have trended, how covariates evolve. Statisticians call these nuisance parameters, and the name is earned.
+      </p>
+      <p>
+        Modern practice estimates them with machine learning, which is flexible but converges slowly. My research asks what that costs. Given the data, and the assumptions one is willing to defend, how precise can any estimator be? What does an estimator that attains that limit look like — and can it stay valid when some of the intermediate steps are wrong?
+      </p>
+      <p>
+        The answers come from semiparametric theory: pinning down the theoretical limit of precision (efficiency bounds and influence functions) and designing targeted estimators that remain valid even when parts of the nuisance model are misspecified. I develop these tools for staggered policy rollouts (difference-in-differences), effects that travel through intermediate channels (causal mediation), and decision rules learned from past data (off-policy evaluation).
+      </p>
+      <p>
+        Under the hood, this work rests on the geometry of statistical models and causal graphs — characterizing when complex longitudinal effects are identifiable at all, and how the structure of the problem shapes the best possible estimator.
+      </p>
+    </div>
+  </section>
 
   <!-- ================= RESEARCH MAP ================= -->
   <section class="section" aria-labelledby="map-h">
