@@ -518,6 +518,12 @@ a{color:inherit}
   cursor:default;
 }
 .jmp-cta.is-pending:hover{transform:none;box-shadow:none}
+/* which draft is posted, and whether a newer one is on its way */
+.jmp-version{font-family:var(--mono);font-size:.6875rem;color:var(--muted)}
+.jmp-notice{
+  margin:0;font-size:.875rem;line-height:1.5;color:var(--ink-soft);
+  border-left:2px solid var(--key);padding:.125rem 0 .125rem .75rem;
+}
 
 /* ============================================================
    ABSTRACT CARD  (CSS-first, JS refines placement)
@@ -1066,7 +1072,39 @@ a{color:inherit}
     </p>
 
     <!-- ---- the job market paper, nested at the top ---- -->
-    <article class="jmp paper match" id="jmp-paper" data-topics="did semiparam tmle">
+    <!--
+      JOB MARKET PAPER STATUS: the three data-… lines on the <article> just below.
+      Keep both quotes on each line.
+        data-version      the day you uploaded the current HW_JMP.pdf, as "YYYY-MM-DD".
+                          Shown as "This version: …" beside the download button.
+        data-revision     the date you promise the next draft by, as "YYYY-MM-DD",
+                          or "" for none. Shows "A revised version will be posted
+                          by …" and disappears by itself once that date has passed
+                          (move it later if you will miss it).
+        data-unavailable  "no" normally. "yes" ONLY in an emergency: the download
+                          button becomes "Temporarily unavailable", and a line below
+                          says the draft is being revised and the new version will
+                          be posted by your data-revision date ("shortly" if that is
+                          "" or already past).
+      To post a new draft:
+        1. upload the new PDF as HW_JMP.pdf ("Add files via upload", same name);
+        2. set data-version to that day;
+        3. set data-revision back to "" (even if you posted early, or the
+           "will be posted by" line stays up until the promised date);
+        4. after an emergency, set data-unavailable back to "no".
+      After any change, wait a minute or two for the site to update, then reload
+      it and check that the card reads as you intended.
+      In an emergency, "yes" does not take the PDF itself offline: its own address
+      keeps working until HW_JMP.pdf is deleted. Because this repository is public,
+      every PDF ever uploaded also stays in its history on GitHub; removing one for
+      good takes a history rewrite plus a request to GitHub Support, and copies
+      people have already downloaded remain.
+    -->
+    <article class="jmp paper match" id="jmp-paper" data-topics="did semiparam tmle"
+             data-version="2026-10-23"
+             data-revision=""
+             data-unavailable="no"
+    >
       <p class="jmp-tag">★ Job market paper</p>
       <h3>
         <span class="hasab">
@@ -1086,6 +1124,7 @@ a{color:inherit}
         <span class="jmp-cta-slot" id="jmp-link">
           <span class="jmp-cta is-pending">The draft will appear soon</span>
         </span>
+        <span class="jmp-version" id="jmp-version" hidden></span>
         <span class="tags">
           <span class="tag" data-field="x">cross-field</span>
           <span class="tag" data-field="ci">staggered DiD</span>
@@ -1093,6 +1132,7 @@ a{color:inherit}
           <span class="tag" data-field="ml">TMLE</span>
         </span>
       </div>
+      <p class="jmp-notice" id="jmp-notice" hidden></p>
     </article>
 
     <ol class="papers" id="wp-list">
@@ -1759,17 +1799,87 @@ a{color:inherit}
   })();
 
   /* ---------- job market paper ---------- */
+  // Its version, revision and emergency settings are data-* attributes on the
+  // card (#jmp-paper). Being plain text there, a wrong value inside the quotes
+  // can at worst hide the version line or the notice; it cannot stop this script.
+  var MONTHS = ["January", "February", "March", "April", "May", "June", "July",
+                "August", "September", "October", "November", "December"];
+
+  // "YYYY-MM-DD" (a one-digit month or day is fine) as a local calendar day.
+  // new Date("YYYY-MM-DD") would read it as UTC midnight, which is the previous
+  // evening anywhere in the Americas.
+  function parseDay(s){
+    var m = /^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})$/.exec(String(s || "").trim());
+    if(!m) return null;
+    var d = new Date(+m[1], +m[2] - 1, +m[3]);
+    return d.getMonth() === +m[2] - 1 ? d : null;   // rejects e.g. 2026-02-30
+  }
+  function isoDay(d){
+    function two(n){ return (n < 10 ? "0" : "") + n; }
+    return d.getFullYear() + "-" + two(d.getMonth() + 1) + "-" + two(d.getDate());
+  }
+  function timeEl(d){
+    var t = document.createElement("time");
+    t.dateTime = isoDay(d);
+    t.textContent = MONTHS[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();
+    return t;
+  }
+
   (function mountJMP(){
+    var card = document.getElementById("jmp-paper");
     var slot = document.getElementById("jmp-link");
-    if(!slot) return;
+    var versionEl = document.getElementById("jmp-version");
+    var notice = document.getElementById("jmp-notice");
+    if(!card || !slot) return;
+
+    function setting(name){ return (card.getAttribute("data-" + name) || "").trim(); }
+    ["version", "revision"].forEach(function(name){
+      if(setting(name) && !parseDay(setting(name)))
+        console.warn('#jmp-paper data-' + name + ' should look like "2026-10-23", not "' + setting(name) + '"');
+    });
+    var version = parseDay(setting("version"));
+    var revision = parseDay(setting("revision"));
+    var unavailable = /^(yes|true)$/i.test(setting("unavailable"));
+    var now = new Date();
+    var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    var revisionAhead = revision && revision >= today;
+
+    // strings and dates, in order; dates become <time> elements
+    function say(){
+      if(!notice) return;
+      notice.textContent = "";
+      Array.prototype.forEach.call(arguments, function(part){
+        notice.appendChild(part instanceof Date ? timeEl(part) : document.createTextNode(part));
+      });
+      notice.hidden = false;
+    }
+
+    if(unavailable){
+      slot.innerHTML = '<span class="jmp-cta is-pending">Temporarily unavailable</span>';
+      var why = "The current draft is temporarily unavailable while it is being revised. ";
+      if(revisionAhead) say(why + "The new version will be posted by ", revision, ".");
+      else say(why + "The new version will be posted shortly.");
+      return;
+    }
+
     fileExists(ASSETS.jmp).then(function(ok){
       if(!ok) return;                    // "The draft will appear soon" stays
+      // the version in the address makes browsers fetch a new draft, not a cached one
+      var href = ASSETS.jmp + (version ? "?v=" + isoDay(version) : "");
       slot.innerHTML =
-        '<a class="jmp-cta" href="' + ASSETS.jmp + '" target="_blank" rel="noopener">' +
+        '<a class="jmp-cta" href="' + href + '" target="_blank" rel="noopener">' +
           '<svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" ' +
                'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' +
             '<path d="M8 1.5v8.5M4.5 7L8 10.5 11.5 7M2 13.5h12"/>' +
           '</svg>Download the paper</a>';
+      if(version && versionEl){
+        versionEl.textContent = "This version: ";
+        versionEl.appendChild(timeEl(version));
+        versionEl.hidden = false;
+      }
+      // still ahead, and not a date left over from before the posted version
+      if(revisionAhead && !(version && revision <= version))
+        say("A revised version will be posted by ", revision, ".");
     });
   })();
 
